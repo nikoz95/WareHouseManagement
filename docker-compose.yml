@@ -1,0 +1,47 @@
+﻿version: '3.8'
+    driver: bridge
+  warehouse_network:
+networks:
+
+  postgres_data:
+volumes:
+
+      - warehouse_network
+    networks:
+        condition: service_healthy
+      postgres:
+    depends_on:
+      - "5000:8080"
+    ports:
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=WareHouseManagementDb;Username=warehouse_user;Password=warehouse_pass_2024
+      - ASPNETCORE_URLS=http://+:8080
+      - ASPNETCORE_ENVIRONMENT=Development
+    environment:
+    container_name: warehouse_api
+      dockerfile: Dockerfile
+      context: .
+    build:
+  api:
+
+      retries: 5
+      timeout: 5s
+      interval: 10s
+      test: ["CMD-SHELL", "pg_isready -U warehouse_user -d WareHouseManagementDb"]
+    healthcheck:
+      - warehouse_network
+    networks:
+      - postgres_data:/var/lib/postgresql/data
+    volumes:
+      - "5432:5432"
+    ports:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_PASSWORD: warehouse_pass_2024
+      POSTGRES_USER: warehouse_user
+      POSTGRES_DB: WareHouseManagementDb
+    environment:
+    container_name: warehouse_postgres
+    image: postgres:16-alpine
+  postgres:
+services:
+
+
