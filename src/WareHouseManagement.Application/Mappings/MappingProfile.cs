@@ -1,44 +1,150 @@
-﻿using AutoMapper;
+﻿﻿using Riok.Mapperly.Abstractions;
 using WareHouseManagement.Application.DTOs;
 using WareHouseManagement.Domain.Entities;
 
 namespace WareHouseManagement.Application.Mappings;
 
-public class MappingProfile : Profile
+[Mapper]
+public partial class ApplicationMapper
 {
-    public MappingProfile()
+    // Company mappings - manual for CompanyTypeDescription
+    public CompanyDto MapToCompanyDto(Company company)
     {
-        // Company mappings
-        CreateMap<Company, CompanyDto>()
-            .ForMember(dest => dest.CompanyTypeDescription, opt => opt.MapFrom(src => src.CompanyType.ToString()));
-        CreateMap<CreateCompanyDto, Company>();
-        CreateMap<UpdateCompanyDto, Company>();
+        return new CompanyDto
+        {
+            Id = company.Id,
+            Name = company.Name,
+            TaxId = company.TaxId,
+            Address = company.Address,
+            Phone = company.Phone,
+            Email = company.Email,
+            CompanyType = company.CompanyType,
+            CompanyTypeDescription = company.CompanyType.ToString(),
+            IsPartner = company.IsPartner,
+            CreatedAt = company.CreatedAt
+        };
+    }
+    
+    [MapperIgnoreTarget(nameof(Company.CompanyProducts))]
+    [MapperIgnoreTarget(nameof(Company.CompanyLocations))]
+    [MapperIgnoreTarget(nameof(Company.Orders))]
+    [MapperIgnoreTarget(nameof(Company.Id))]
+    [MapperIgnoreTarget(nameof(Company.CreatedAt))]
+    [MapperIgnoreTarget(nameof(Company.UpdatedAt))]
+    [MapperIgnoreTarget(nameof(Company.IsDeleted))]
+    public partial Company MapToCompany(CreateCompanyDto dto);
+    
+    [MapperIgnoreTarget(nameof(Company.CompanyProducts))]
+    [MapperIgnoreTarget(nameof(Company.CompanyLocations))]
+    [MapperIgnoreTarget(nameof(Company.Orders))]
+    [MapperIgnoreTarget(nameof(Company.CreatedAt))]
+    [MapperIgnoreTarget(nameof(Company.UpdatedAt))]
+    [MapperIgnoreTarget(nameof(Company.IsDeleted))]
+    public partial Company MapToCompany(UpdateCompanyDto dto);
 
-        // Product mappings
-        CreateMap<Product, ProductDto>();
-        CreateMap<CreateProductDto, Product>();
-        CreateMap<UpdateProductDto, Product>();
+    // Product mappings - manual mapping needed for complex nested properties
+    public ProductDto MapToProductDto(Product product)
+    {
+        var dto = new ProductDto
+        {
+            Id = product.Id,
+            Name = product.Name,
+            Description = product.Description,
+            Barcode = product.Barcode,
+            Price = product.Price,
+            UnitTypeRuleId = product.UnitTypeRuleId,
+            UnitTypeName = product.UnitTypeRule?.NameKa ?? "",
+            UnitTypeAbbreviation = product.UnitTypeRule?.Abbreviation ?? "",
+            IsAlcoholic = product.AlcoholicProduct != null,
+            AlcoholPercentage = product.AlcoholicProduct?.AlcoholPercentage,
+            AlcoholType = product.AlcoholicProduct?.AlcoholType,
+            CountryOfOrigin = product.AlcoholicProduct?.CountryOfOrigin,
+            CreatedAt = product.CreatedAt
+        };
+        return dto;
+    }
 
-        // Order mappings
-        CreateMap<Order, OrderDto>()
-            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company != null ? src.Company.Name : null))
-            .ForMember(dest => dest.StatusDescription, opt => opt.MapFrom(src => src.Status.ToString()))
-            .ForMember(dest => dest.PaymentStatusDescription, opt => opt.MapFrom(src => src.PaymentStatus.ToString()));
-        
-        CreateMap<OrderItem, OrderItemDto>()
-            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name));
+    // Order mappings - manual mapping for nested properties
+    public OrderDto MapToOrderDto(Order order)
+    {
+        var dto = new OrderDto
+        {
+            Id = order.Id,
+            OrderNumber = order.OrderNumber,
+            CompanyId = order.CompanyId,
+            CompanyName = order.Company?.Name,
+            CustomerName = order.CustomerName,
+            CustomerPhone = order.CustomerPhone,
+            CustomerEmail = order.CustomerEmail,
+            OrderDate = order.OrderDate,
+            Status = order.Status,
+            StatusDescription = order.Status.ToString(),
+            PaymentStatus = order.PaymentStatus,
+            PaymentStatusDescription = order.PaymentStatus.ToString(),
+            TotalAmount = order.TotalAmount,
+            PaidAmount = order.PaidAmount,
+            DebtAmount = order.DebtAmount,
+            Notes = order.Notes,
+            OrderItems = order.OrderItems?.Select(MapToOrderItemDto).ToList() ?? new List<OrderItemDto>()
+        };
+        return dto;
+    }
+    
+    public OrderItemDto MapToOrderItemDto(OrderItem orderItem)
+    {
+        return new OrderItemDto
+        {
+            Id = orderItem.Id,
+            ProductId = orderItem.ProductId,
+            ProductName = orderItem.Product?.Name ?? "",
+            QuantityInBottles = orderItem.QuantityInBottles,
+            QuantityInBoxes = orderItem.QuantityInBoxes,
+            UnitPrice = orderItem.UnitPrice,
+            TotalPrice = orderItem.TotalPrice
+        };
+    }
 
-        // WarehouseStock mappings
-        CreateMap<WarehouseStock, WarehouseStockDto>()
-            .ForMember(dest => dest.WarehouseLocationName, opt => opt.MapFrom(src => src.WarehouseLocation.LocationName))
-            .ForMember(dest => dest.WarehouseName, opt => opt.MapFrom(src => src.WarehouseLocation.Warehouse.Name))
-            .ForMember(dest => dest.ProductName, opt => opt.MapFrom(src => src.Product.Name))
-            .ForMember(dest => dest.ManufacturerName, opt => opt.MapFrom(src => src.Manufacturer.Name));
+    // WarehouseStock mappings
+    public WarehouseStockDto MapToWarehouseStockDto(WarehouseStock warehouseStock)
+    {
+        return new WarehouseStockDto
+        {
+            Id = warehouseStock.Id,
+            WarehouseLocationId = warehouseStock.WarehouseLocationId,
+            WarehouseLocationName = warehouseStock.WarehouseLocation?.LocationName ?? "",
+            WarehouseName = warehouseStock.WarehouseLocation?.Warehouse?.Name ?? "",
+            ProductId = warehouseStock.ProductId,
+            ProductName = warehouseStock.Product?.Name ?? "",
+            ManufacturerId = warehouseStock.ManufacturerId,
+            ManufacturerName = warehouseStock.Manufacturer?.Name ?? "",
+            BottlesPerBox = warehouseStock.BottlesPerBox,
+            QuantityInBottles = warehouseStock.QuantityInBottles,
+            QuantityInBoxes = warehouseStock.QuantityInBoxes,
+            PurchasePrice = warehouseStock.PurchasePrice,
+            ExpirationDate = warehouseStock.ExpirationDate,
+            CreatedAt = warehouseStock.CreatedAt
+        };
+    }
 
-        // Debtor mappings
-        CreateMap<Debtor, DebtorDto>()
-            .ForMember(dest => dest.CompanyName, opt => opt.MapFrom(src => src.Company != null ? src.Company.Name : null))
-            .ForMember(dest => dest.IsPartnerCompany, opt => opt.MapFrom(src => src.Company != null && src.Company.IsPartner));
+    // Debtor mappings
+    public DebtorDto MapToDebtorDto(Debtor debtor)
+    {
+        return new DebtorDto
+        {
+            Id = debtor.Id,
+            CompanyId = debtor.CompanyId,
+            CompanyName = debtor.Company?.Name,
+            DebtorName = debtor.DebtorName,
+            Phone = debtor.Phone,
+            Email = debtor.Email,
+            TotalDebt = debtor.TotalDebt,
+            PaidAmount = debtor.PaidAmount,
+            RemainingDebt = debtor.RemainingDebt,
+            DebtDate = debtor.DebtDate,
+            LastPaymentDate = debtor.LastPaymentDate,
+            Notes = debtor.Notes,
+            IsPartnerCompany = debtor.Company != null && debtor.Company.IsPartner
+        };
     }
 }
 

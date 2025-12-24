@@ -1,7 +1,7 @@
-﻿﻿using AutoMapper;
-using MediatR;
+﻿﻿using MediatR;
 using WareHouseManagement.Application.Common.Models;
 using WareHouseManagement.Application.DTOs;
+using WareHouseManagement.Application.Mappings;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Domain.Enums;
 using WareHouseManagement.Domain.Interfaces;
@@ -11,9 +11,9 @@ namespace WareHouseManagement.Application.Features.Orders.Commands;
 public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<OrderDto>>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+    private readonly ApplicationMapper _mapper;
 
-    public CreateOrderCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateOrderCommandHandler(IUnitOfWork unitOfWork, ApplicationMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -144,7 +144,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
             await _unitOfWork.SaveChangesAsync();
             await _unitOfWork.CommitTransactionAsync();
 
-            var orderDto = _mapper.Map<OrderDto>(order);
+            var orderDto = _mapper.MapToOrderDto(order);
             return Result<OrderDto>.Success(orderDto, "შეკვეთა წარმატებით შეიქმნა");
         }
         catch (Exception ex)

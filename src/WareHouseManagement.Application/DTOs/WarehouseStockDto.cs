@@ -1,4 +1,4 @@
-﻿﻿namespace WareHouseManagement.Application.DTOs;
+﻿﻿﻿namespace WareHouseManagement.Application.DTOs;
 
 public class WarehouseStockDto
 {
@@ -10,6 +10,7 @@ public class WarehouseStockDto
     public string ProductName { get; set; } = string.Empty;
     public Guid ManufacturerId { get; set; }
     public string ManufacturerName { get; set; } = string.Empty;
+    public int BottlesPerBox { get; set; }
     public int QuantityInBottles { get; set; }
     public int QuantityInBoxes { get; set; }
     public decimal PurchasePrice { get; set; }

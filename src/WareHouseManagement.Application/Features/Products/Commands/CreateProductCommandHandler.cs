@@ -1,27 +1,36 @@
-﻿using AutoMapper;
-using MediatR;
+﻿using MediatR;
 using WareHouseManagement.Application.Common.Models;
 using WareHouseManagement.Application.DTOs;
+using WareHouseManagement.Application.Mappings;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Domain.Interfaces;
 
 namespace WareHouseManagement.Application.Features.Products.Commands;
 
-public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Result<ProductDto>>
+public class CreateProductCommandHandler(IUnitOfWork unitOfWork, ApplicationMapper mapper)
+    : IRequestHandler<CreateProductCommand, Result<ProductDto>>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
-
-    public CreateProductCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
-    {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
-
     public async Task<Result<ProductDto>> Handle(CreateProductCommand request, CancellationToken cancellationToken)
     {
         try
         {
+            // შევამოწმოთ არსებობს თუ არა პროდუქტი იგივე სახელით
+            var existingProductByName = await unitOfWork.Products.FindAsync(p => p.Name == request.Name);
+            if (existingProductByName.Any())
+            {
+                return Result<ProductDto>.Failure($"პროდუქტი სახელით '{request.Name}' უკვე არსებობს");
+            }
+
+            // შევამოწმოთ არსებობს თუ არა პროდუქტი იგივე ბარკოდით
+            if (!string.IsNullOrEmpty(request.Barcode))
+            {
+                var existingProductByBarcode = await unitOfWork.Products.FindAsync(p => p.Barcode == request.Barcode);
+                if (existingProductByBarcode.Any())
+                {
+                    return Result<ProductDto>.Failure($"პროდუქტი ბარკოდით '{request.Barcode}' უკვე არსებობს");
+                }
+            }
+
             var product = new Product
             {
                 Id = Guid.NewGuid(),
@@ -34,7 +43,7 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                 UpdatedAt = DateTime.UtcNow
             };
 
-            await _unitOfWork.Products.AddAsync(product);
+            await unitOfWork.Products.AddAsync(product);
             
             // თუ პროდუქტი ალკოჰოლურია, შევქმნათ AlcoholicProduct ჩანაწერი
             if (request.IsAlcoholic && request.AlcoholPercentage.HasValue)
@@ -51,12 +60,12 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                     UpdatedAt = DateTime.UtcNow
                 };
                 
-                await _unitOfWork.AlcoholicProducts.AddAsync(alcoholicProduct);
+                await unitOfWork.AlcoholicProducts.AddAsync(alcoholicProduct);
             }
             
-            await _unitOfWork.SaveChangesAsync();
+            await unitOfWork.SaveChangesAsync();
 
-            var productDto = _mapper.Map<ProductDto>(product);
+            var productDto = mapper.MapToProductDto(product);
             return Result<ProductDto>.Success(productDto, "პროდუქტი წარმატებით შეიქმნა");
         }
         catch (Exception ex)

@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using MediatR;
+﻿﻿using MediatR;
 using WareHouseManagement.Application.Common.Models;
 using WareHouseManagement.Application.DTOs;
+using WareHouseManagement.Application.Mappings;
 using WareHouseManagement.Domain.Interfaces;
 
 namespace WareHouseManagement.Application.Features.Companies.Queries;
@@ -9,9 +9,9 @@ namespace WareHouseManagement.Application.Features.Companies.Queries;
 public class GetAllCompaniesQueryHandler : IRequestHandler<GetAllCompaniesQuery, Result<IEnumerable<CompanyDto>>>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+    private readonly ApplicationMapper _mapper;
 
-    public GetAllCompaniesQueryHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public GetAllCompaniesQueryHandler(IUnitOfWork unitOfWork, ApplicationMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -22,7 +22,7 @@ public class GetAllCompaniesQueryHandler : IRequestHandler<GetAllCompaniesQuery,
         try
         {
             var companies = await _unitOfWork.Companies.GetAllAsync();
-            var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
+            var companyDtos = companies.Select(_mapper.MapToCompanyDto);
             return Result<IEnumerable<CompanyDto>>.Success(companyDtos);
         }
         catch (Exception ex)

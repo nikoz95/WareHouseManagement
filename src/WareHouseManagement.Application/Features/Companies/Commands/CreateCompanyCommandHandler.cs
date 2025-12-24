@@ -1,7 +1,7 @@
-﻿using AutoMapper;
-using MediatR;
+﻿﻿using MediatR;
 using WareHouseManagement.Application.Common.Models;
 using WareHouseManagement.Application.DTOs;
+using WareHouseManagement.Application.Mappings;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Domain.Interfaces;
 
@@ -10,9 +10,9 @@ namespace WareHouseManagement.Application.Features.Companies.Commands;
 public class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyCommand, Result<CompanyDto>>
 {
     private readonly IUnitOfWork _unitOfWork;
-    private readonly IMapper _mapper;
+    private readonly ApplicationMapper _mapper;
 
-    public CreateCompanyCommandHandler(IUnitOfWork unitOfWork, IMapper mapper)
+    public CreateCompanyCommandHandler(IUnitOfWork unitOfWork, ApplicationMapper mapper)
     {
         _unitOfWork = unitOfWork;
         _mapper = mapper;
@@ -38,7 +38,7 @@ public class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyCommand,
             await _unitOfWork.Companies.AddAsync(company);
             await _unitOfWork.SaveChangesAsync();
 
-            var companyDto = _mapper.Map<CompanyDto>(company);
+            var companyDto = _mapper.MapToCompanyDto(company);
             return Result<CompanyDto>.Success(companyDto, "კომპანია წარმატებით შეიქმნა");
         }
         catch (Exception ex)
