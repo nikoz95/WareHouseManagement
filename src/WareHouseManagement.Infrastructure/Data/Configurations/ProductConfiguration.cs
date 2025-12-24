@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WareHouseManagement.Domain.Entities;
 
@@ -20,11 +20,14 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder.Property(p => p.Barcode)
             .HasMaxLength(50);
 
-        builder.Property(p => p.Volume)
+        builder.Property(p => p.Price)
             .HasPrecision(18, 2);
 
-        builder.Property(p => p.AlcoholPercentage)
-            .HasPrecision(5, 2);
+
+        builder.HasOne(p => p.UnitTypeRule)
+            .WithMany()
+            .HasForeignKey(p => p.UnitTypeRuleId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasMany(p => p.CompanyProducts)
             .WithOne(cp => cp.Product)

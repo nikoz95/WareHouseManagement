@@ -28,14 +28,32 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
                 Name = request.Name,
                 Description = request.Description,
                 Barcode = request.Barcode,
-                BottlesPerBox = request.BottlesPerBox,
-                Volume = request.Volume,
-                AlcoholPercentage = request.AlcoholPercentage,
+                Price = request.Price,
+                UnitTypeRuleId = request.UnitTypeRuleId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
             };
 
             await _unitOfWork.Products.AddAsync(product);
+            
+            // თუ პროდუქტი ალკოჰოლურია, შევქმნათ AlcoholicProduct ჩანაწერი
+            if (request.IsAlcoholic && request.AlcoholPercentage.HasValue)
+            {
+                var alcoholicProduct = new AlcoholicProduct
+                {
+                    Id = Guid.NewGuid(),
+                    ProductId = product.Id,
+                    AlcoholPercentage = request.AlcoholPercentage.Value,
+                    AlcoholType = request.AlcoholType,
+                    CountryOfOrigin = request.CountryOfOrigin,
+                    ShelfLifeMonths = request.ShelfLifeMonths,
+                    CreatedAt = DateTime.UtcNow,
+                    UpdatedAt = DateTime.UtcNow
+                };
+                
+                await _unitOfWork.AlcoholicProducts.AddAsync(alcoholicProduct);
+            }
+            
             await _unitOfWork.SaveChangesAsync();
 
             var productDto = _mapper.Map<ProductDto>(product);

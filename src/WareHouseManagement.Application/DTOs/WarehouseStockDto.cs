@@ -1,4 +1,4 @@
-﻿namespace WareHouseManagement.Application.DTOs;
+﻿﻿namespace WareHouseManagement.Application.DTOs;
 
 public class WarehouseStockDto
 {
@@ -31,6 +31,7 @@ public class CreateWarehouseStockDto
 public class UpdateWarehouseStockDto
 {
     public Guid Id { get; set; }
+    public int BottlesPerBox { get; set; }
     public int QuantityInBottles { get; set; }
     public int QuantityInBoxes { get; set; }
     public decimal PurchasePrice { get; set; }

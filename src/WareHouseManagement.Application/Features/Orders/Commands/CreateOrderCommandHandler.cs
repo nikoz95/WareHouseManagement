@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+﻿﻿using AutoMapper;
 using MediatR;
 using WareHouseManagement.Application.Common.Models;
 using WareHouseManagement.Application.DTOs;
@@ -56,13 +56,24 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                     return Result<OrderDto>.Failure($"პროდუქტი ID {itemDto.ProductId} არ მოიძებნა");
                 }
 
-                var totalPrice = (itemDto.QuantityInBottles + itemDto.QuantityInBoxes * product.BottlesPerBox) * itemDto.UnitPrice;
+                // საწყობიდან პროდუქტის სტოკების მიღება
+                var stocks = (await _unitOfWork.Warehouses.GetStockByProductAsync(itemDto.ProductId)).ToList();
+                var firstStock = stocks.FirstOrDefault();
+                if (firstStock == null)
+                {
+                    await _unitOfWork.RollbackTransactionAsync();
+                    return Result<OrderDto>.Failure($"პროდუქტი არ არის საწყობში: {product.Name}");
+                }
+                
+                var bottlesPerBox = firstStock.BottlesPerBox;
+                var totalPrice = (itemDto.QuantityInBottles + itemDto.QuantityInBoxes * bottlesPerBox) * itemDto.UnitPrice;
 
                 var orderItem = new OrderItem
                 {
                     Id = Guid.NewGuid(),
                     OrderId = order.Id,
                     ProductId = itemDto.ProductId,
+                    BottlesPerBox = bottlesPerBox,
                     QuantityInBottles = itemDto.QuantityInBottles,
                     QuantityInBoxes = itemDto.QuantityInBoxes,
                     UnitPrice = itemDto.UnitPrice,
@@ -74,15 +85,14 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                 totalAmount += totalPrice;
 
                 // საწყობიდან პროდუქტის გამოკლება
-                var stocks = await _unitOfWork.Warehouses.GetStockByProductAsync(itemDto.ProductId);
-                var totalNeededBottles = itemDto.QuantityInBottles + (itemDto.QuantityInBoxes * product.BottlesPerBox);
+                var totalNeededBottles = itemDto.QuantityInBottles + (itemDto.QuantityInBoxes * bottlesPerBox);
                 
                 int remainingBottles = totalNeededBottles;
                 foreach (var stock in stocks.OrderBy(s => s.ExpirationDate))
                 {
                     if (remainingBottles <= 0) break;
 
-                    var availableBottles = stock.QuantityInBottles + (stock.QuantityInBoxes * product.BottlesPerBox);
+                    var availableBottles = stock.QuantityInBottles + (stock.QuantityInBoxes * stock.BottlesPerBox);
                     
                     if (availableBottles > 0)
                     {
@@ -95,7 +105,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                         while (stock.QuantityInBottles < 0 && stock.QuantityInBoxes > 0)
                         {
                             stock.QuantityInBoxes--;
-                            stock.QuantityInBottles += product.BottlesPerBox;
+                            stock.QuantityInBottles += stock.BottlesPerBox;
                         }
                         
                         stock.UpdatedAt = DateTime.UtcNow;

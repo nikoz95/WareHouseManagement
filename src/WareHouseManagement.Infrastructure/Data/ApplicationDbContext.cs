@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Domain.Entities;
+using WareHouseManagement.Infrastructure.Data.Seed;
 
 namespace WareHouseManagement.Infrastructure.Data;
 
@@ -20,6 +21,8 @@ public class ApplicationDbContext : DbContext
     public DbSet<Order> Orders { get; set; }
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Debtor> Debtors { get; set; }
+    public DbSet<UnitTypeRule> UnitTypeRules { get; set; }
+    public DbSet<AlcoholicProduct> AlcoholicProducts { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -27,6 +30,9 @@ public class ApplicationDbContext : DbContext
 
         // Apply configurations
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        
+        // Seed data
+        modelBuilder.SeedUnitTypeRules();
     }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

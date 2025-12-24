@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿﻿using Microsoft.EntityFrameworkCore.Storage;
 using WareHouseManagement.Domain.Interfaces;
 using WareHouseManagement.Infrastructure.Data;
 
@@ -16,7 +16,9 @@ public class UnitOfWork : IUnitOfWork
         IWarehouseRepository warehouses,
         IOrderRepository orders,
         IDebtorRepository debtors,
-        IManufacturerRepository manufacturers)
+        IManufacturerRepository manufacturers,
+        IUnitTypeRuleRepository unitTypeRules,
+        IAlcoholicProductRepository alcoholicProducts)
     {
         _context = context;
         Companies = companies;
@@ -25,6 +27,8 @@ public class UnitOfWork : IUnitOfWork
         Orders = orders;
         Debtors = debtors;
         Manufacturers = manufacturers;
+        UnitTypeRules = unitTypeRules;
+        AlcoholicProducts = alcoholicProducts;
     }
 
     public ICompanyRepository Companies { get; }
@@ -33,6 +37,8 @@ public class UnitOfWork : IUnitOfWork
     public IOrderRepository Orders { get; }
     public IDebtorRepository Debtors { get; }
     public IManufacturerRepository Manufacturers { get; }
+    public IUnitTypeRuleRepository UnitTypeRules { get; }
+    public IAlcoholicProductRepository AlcoholicProducts { get; }
 
     public async Task<int> SaveChangesAsync()
     {

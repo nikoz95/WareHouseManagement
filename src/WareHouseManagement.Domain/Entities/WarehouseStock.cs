@@ -1,4 +1,4 @@
-﻿using WareHouseManagement.Domain.Common;
+﻿﻿using WareHouseManagement.Domain.Common;
 
 namespace WareHouseManagement.Domain.Entities;
 
@@ -10,6 +10,7 @@ public class WarehouseStock : BaseEntity
     public Guid WarehouseLocationId { get; set; }
     public Guid ProductId { get; set; }
     public Guid ManufacturerId { get; set; }
+    public int BottlesPerBox { get; set; } = 6; // ყუთში ბოთლების რაოდენობა (ამ კონკრეტული სტოკისთვის)
     public int QuantityInBottles { get; set; } // რაოდენობა ბოთლებში
     public int QuantityInBoxes { get; set; } // რაოდენობა ყუთებში
     public decimal PurchasePrice { get; set; } // შესყიდვის ფასი
