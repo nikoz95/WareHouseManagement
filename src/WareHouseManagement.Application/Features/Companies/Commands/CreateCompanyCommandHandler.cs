@@ -7,21 +7,30 @@ using WareHouseManagement.Domain.Interfaces;
 
 namespace WareHouseManagement.Application.Features.Companies.Commands;
 
-public class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyCommand, Result<CompanyDto>>
+public class CreateCompanyCommandHandler(IUnitOfWork unitOfWork, ApplicationMapper mapper)
+    : IRequestHandler<CreateCompanyCommand, Result<CompanyDto>>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly ApplicationMapper _mapper;
-
-    public CreateCompanyCommandHandler(IUnitOfWork unitOfWork, ApplicationMapper mapper)
-    {
-        _unitOfWork = unitOfWork;
-        _mapper = mapper;
-    }
-
     public async Task<Result<CompanyDto>> Handle(CreateCompanyCommand request, CancellationToken cancellationToken)
     {
         try
         {
+            // შევამოწმოთ არსებობს თუ არა კომპანია იგივე სახელით
+            var existingCompanyByName = await unitOfWork.Companies.FindAsync(c => c.Name == request.Name);
+            if (existingCompanyByName.Any())
+            {
+                return Result<CompanyDto>.Failure($"კომპანია სახელით '{request.Name}' უკვე არსებობს");
+            }
+
+            // შევამოწმოთ არსებობს თუ არა კომპანია იგივე საიდენტიფიკაციო კოდით
+            if (!string.IsNullOrEmpty(request.TaxId))
+            {
+                var existingCompanyByTaxId = await unitOfWork.Companies.FindAsync(c => c.TaxId == request.TaxId);
+                if (existingCompanyByTaxId.Any())
+                {
+                    return Result<CompanyDto>.Failure($"კომპანია საიდენტიფიკაციო კოდით '{request.TaxId}' უკვე არსებობს");
+                }
+            }
+
             var company = new Company
             {
                 Id = Guid.NewGuid(),
@@ -35,10 +44,10 @@ public class CreateCompanyCommandHandler : IRequestHandler<CreateCompanyCommand,
                 CreatedAt = DateTime.UtcNow
             };
 
-            await _unitOfWork.Companies.AddAsync(company);
-            await _unitOfWork.SaveChangesAsync();
+            await unitOfWork.Companies.AddAsync(company);
+            await unitOfWork.SaveChangesAsync();
 
-            var companyDto = _mapper.MapToCompanyDto(company);
+            var companyDto = mapper.MapToCompanyDto(company);
             return Result<CompanyDto>.Success(companyDto, "კომპანია წარმატებით შეიქმნა");
         }
         catch (Exception ex)
