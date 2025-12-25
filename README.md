@@ -4,10 +4,23 @@ Clean Architecture აპლიკაცია საწყობის მა�
 
 ## 📋 შინაარსი
 
+- [⚡ სწრაფი სახელმძღვანელო](#-სწრაფი-სახელმძღვანელო) - **დაიწყეთ აქ!**
 - [სწრაფი დაწყება](#-სწრაფი-დაწყება)
 - [API Endpoints](#-api-endpoints)
 - [არქიტექტურა](#️-არქიტექტურა)
 - [დეტალური გაიდები](#-დეტალური-გაიდები)
+
+---
+
+## ⚡ სწრაფი სახელმძღვანელო
+
+**პირველად იწყებთ?** → [QUICK_START.md](./QUICK_START.md) 🚀
+
+**დოკუმენტაციის ინდექსი:** → [DOCUMENTATION_INDEX.md](./DOCUMENTATION_INDEX.md) 📚
+
+**არჩევანი:**
+- 🐳 Docker-ით → [DOCKER_START_GUIDE.md](./DOCKER_START_GUIDE.md)
+- 💻 ლოკალურად → [LOCAL_START_GUIDE.md](./LOCAL_START_GUIDE.md)
 
 ---
 
@@ -25,7 +38,7 @@ Clean Architecture აპლიკაცია საწყობის მა�
 docker-compose up -d postgres; Start-Sleep -Seconds 10; $env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=WareHouseManagementDb;Username=warehouse_user;Password=warehouse_pass_2024"; dotnet ef database update --project src/WareHouseManagement.Infrastructure --startup-project src/WareHouseManagement.API; docker-compose build api; docker-compose up -d
 ```
 
-📖 **დეტალური ინსტრუქცია:** [DOCKER_QUICK_START.md](./DOCKER_QUICK_START.md)
+📖 **დეტალური ინსტრუქცია:** [DOCKER_START_GUIDE.md](./DOCKER_START_GUIDE.md)
 
 ---
 
@@ -40,7 +53,7 @@ cd src/WareHouseManagement.API
 dotnet run
 ```
 
-📖 **დეტალური ინსტრუქცია:** [LOCAL_DEVELOPMENT.md](./LOCAL_DEVELOPMENT.md)
+📖 **დეტალური ინსტრუქცია:** [LOCAL_START_GUIDE.md](./LOCAL_START_GUIDE.md)
 
 ---
 
@@ -420,17 +433,17 @@ dotnet test
 ## 📚 დეტალური გაიდები
 
 ### Setup & Deployment
-- 📦 **[Docker Quick Start](./DOCKER_QUICK_START.md)** - სრული Docker setup ინსტრუქციები
-- 💻 **[Local Development](./LOCAL_DEVELOPMENT.md)** - Docker-ის გარეშე development setup
-- 🐛 **[Troubleshooting](./DOCKER_QUICK_START.md#-ხშირი-პრობლემები)** - ხშირი პრობლემები და გადაწყვეტები
+- 📦 **[Docker-ით გაშვება](./DOCKER_START_GUIDE.md)** - სრული Docker setup ინსტრუქციები
+- 💻 **[ლოკალურად გაშვება](./LOCAL_START_GUIDE.md)** - Docker-ის გარეშე development setup
+- 🐛 **[Troubleshooting](./DOCKER_START_GUIDE.md#-ხშირი-პრობლემები)** - ხშირი პრობლემები და გადაწყვეტები
 
 ### API & Testing
-- 📡 **[API Testing Guide](./API_TESTING_GUIDE.md)** - API endpoints-ების ტესტირება
+- 📡 **[API Testing Guide](./API_TESTING_GUIDE.md)** - API endpoints-ების ტესტირება (თუ არსებობს)
 - 🔌 **[Swagger UI](http://localhost:5000/swagger)** - ინტერაქტიული API დოკუმენტაცია
 
 ### Scripts
 - `start-docker.ps1` - ავტომატური Docker setup და გაშვება
-- `start-quick.ps1` - სწრაფი local development გაშვება (PostgreSQL Docker-ში)
+- `start-local.ps1` - სწრაფი local development გაშვება
 
 ---
 
