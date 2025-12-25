@@ -24,8 +24,8 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
         {
             var product = await _unitOfWork.Products.GetQueryable()
                 .Include(p => p.UnitTypeRule)
-                .Include(p => p.ProductDetails)
-                    .ThenInclude(pd => pd.AlcoholicDetails)
+                .Include(p => p.ProductDetails!)
+                    .ThenInclude(pd => pd!.AlcoholicDetails)
                 .FirstOrDefaultAsync(p => p.Id == request.Id, cancellationToken);
 
             if (product == null)

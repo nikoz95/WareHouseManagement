@@ -224,7 +224,7 @@ public partial class ApplicationMapper
         {
             Id = location.Id,
             WarehouseId = location.WarehouseId,
-            WarehouseName = location.Warehouse?.Name,
+            WarehouseName = location.Warehouse?.Name ?? string.Empty, // Warehouse may be null if not included in query
             LocationName = location.LocationName,
             Description = location.Description,
             CreatedAt = location.CreatedAt
