@@ -1,4 +1,4 @@
-﻿using WareHouseManagement.Domain.Common;
+﻿﻿using WareHouseManagement.Domain.Common;
 
 namespace WareHouseManagement.Domain.Entities;
 
@@ -11,6 +11,7 @@ public class Warehouse : BaseEntity
     public string Address { get; set; } = string.Empty;
     public string? City { get; set; }
     public string? Phone { get; set; }
+    public string? Description { get; set; }
     
     // Navigation properties
     public ICollection<WarehouseLocation> WarehouseLocations { get; set; } = new List<WarehouseLocation>();
