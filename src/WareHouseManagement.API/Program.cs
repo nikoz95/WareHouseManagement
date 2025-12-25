@@ -28,22 +28,39 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// Run database migrations automatically
+// Run database migrations automatically on startup
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    
     try
     {
+        logger.LogInformation("Starting database migration...");
         var context = services.GetRequiredService<ApplicationDbContext>();
-        await context.Database.MigrateAsync();
-        Console.WriteLine("Database migrations applied successfully.");
+        
+        // Apply pending migrations
+        var pendingMigrations = await context.Database.GetPendingMigrationsAsync();
+        if (pendingMigrations.Any())
+        {
+            logger.LogInformation("Applying {Count} pending migration(s)...", pendingMigrations.Count());
+            await context.Database.MigrateAsync();
+            logger.LogInformation("✅ Database migrations applied successfully.");
+        }
+        else
+        {
+            logger.LogInformation("✅ Database is up to date. No pending migrations.");
+        }
         
         // Seed initial data
+        logger.LogInformation("Checking seed data...");
         await DatabaseSeeder.SeedAsync(context);
+        logger.LogInformation("✅ Seed data checked/applied successfully.");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"An error occurred while migrating the database: {ex.Message}");
+        logger.LogError(ex, "❌ An error occurred while migrating the database.");
+        // Don't throw - let the app start anyway so developers can see the error
     }
 }
 

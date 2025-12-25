@@ -38,10 +38,10 @@ public class CompaniesController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> GetById(Guid id)
+    public Task<IActionResult> GetById(Guid id)
     {
         // TODO: Implement GetCompanyByIdQuery
-        return NotFound(new { error = "Company not found" });
+        return Task.FromResult<IActionResult>(NotFound(new { error = "Company not found" }));
     }
 
     /// <summary>
@@ -67,10 +67,10 @@ public class CompaniesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] object command)
+    public Task<IActionResult> Update(Guid id, [FromBody] object command)
     {
         // TODO: Implement UpdateCompanyCommand
-        return NotFound(new { error = "Update not implemented" });
+        return Task.FromResult<IActionResult>(NotFound(new { error = "Update not implemented" }));
     }
 
     /// <summary>

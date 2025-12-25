@@ -4,12 +4,56 @@ Clean Architecture აპლიკაცია საწყობის მა�
 
 ## 📋 შინაარსი
 
-- [სწრაფი დაწყება](#-სწრაფი-დაწყება-docker)
+- [სწრაფი დაწყება](#-სწრაფი-დაწყება)
 - [API Endpoints](#-api-endpoints)
 - [არქიტექტურა](#️-არქიტექტურა)
-- [მონაცემთა ბაზის მართვა](#-მონაცემთა-ბაზის-მართვა)
+- [დეტალური გაიდები](#-დეტალური-გაიდები)
 
-## 🚀 სწრაფი დაწყება (Docker)
+---
+
+## 🚀 სწრაფი დაწყება
+
+### 📦 ვარიანტი 1: Docker (რეკომენდებული)
+
+**One-line setup:**
+```powershell
+.\start-docker.ps1
+```
+
+**ან ხელით:**
+```powershell
+docker-compose up -d postgres; Start-Sleep -Seconds 10; $env:ConnectionStrings__DefaultConnection="Host=localhost;Port=5432;Database=WareHouseManagementDb;Username=warehouse_user;Password=warehouse_pass_2024"; dotnet ef database update --project src/WareHouseManagement.Infrastructure --startup-project src/WareHouseManagement.API; docker-compose build api; docker-compose up -d
+```
+
+📖 **დეტალური ინსტრუქცია:** [DOCKER_QUICK_START.md](./DOCKER_QUICK_START.md)
+
+---
+
+### 💻 ვარიანტი 2: Local Development (Docker-ის გარეშე)
+
+**წინაპირობები:** .NET 9.0 SDK + PostgreSQL 16+
+
+```powershell
+dotnet restore
+dotnet ef database update --project src/WareHouseManagement.Infrastructure --startup-project src/WareHouseManagement.API
+cd src/WareHouseManagement.API
+dotnet run
+```
+
+📖 **დეტალური ინსტრუქცია:** [LOCAL_DEVELOPMENT.md](./LOCAL_DEVELOPMENT.md)
+
+---
+
+## 🌐 ხელმისაწვდომი სერვისები
+
+| სერვისი | URL | აღწერა |
+|---------|-----|--------|
+| **API Swagger** | http://localhost:5000/swagger | API დოკუმენტაცია და ტესტირება |
+| **pgAdmin** | http://localhost:8080 | PostgreSQL UI (Docker only) |
+
+---
+
+## 🚀 სწრაფი დაწყება (Docker) - დეტალური
 
 ### წინაპირობები
 - **Docker Desktop** - დაინსტალირებული და გაშვებული
@@ -371,7 +415,71 @@ dotnet build
 dotnet test
 ```
 
+---
+
+## 📚 დეტალური გაიდები
+
+### Setup & Deployment
+- 📦 **[Docker Quick Start](./DOCKER_QUICK_START.md)** - სრული Docker setup ინსტრუქციები
+- 💻 **[Local Development](./LOCAL_DEVELOPMENT.md)** - Docker-ის გარეშე development setup
+- 🐛 **[Troubleshooting](./DOCKER_QUICK_START.md#-ხშირი-პრობლემები)** - ხშირი პრობლემები და გადაწყვეტები
+
+### API & Testing
+- 📡 **[API Testing Guide](./API_TESTING_GUIDE.md)** - API endpoints-ების ტესტირება
+- 🔌 **[Swagger UI](http://localhost:5000/swagger)** - ინტერაქტიული API დოკუმენტაცია
+
+### Scripts
+- `start-docker.ps1` - ავტომატური Docker setup და გაშვება
+- `start-quick.ps1` - სწრაფი local development გაშვება (PostgreSQL Docker-ში)
+
+---
+
+## 🎯 მთავარი Features
+
+✅ **Clean Architecture** - Domain-Driven Design
+✅ **CQRS Pattern** - MediatR-ით
+✅ **Repository Pattern** - Unit of Work
+✅ **FluentValidation** - Request validation
+✅ **Entity Framework Core 9** - ORM
+✅ **PostgreSQL** - Database
+✅ **Mapperly** - Object mapping (Source Generator)
+✅ **Docker Support** - Containerization
+✅ **Swagger/OpenAPI** - API documentation
+✅ **Seed Data** - Demo მონაცემებით
+
+---
+
+## 🛠️ Tech Stack
+
+**Backend:**
+- .NET 9.0
+- ASP.NET Core Web API
+- Entity Framework Core 9.0
+- PostgreSQL 16+
+
+**Patterns & Libraries:**
+- Clean Architecture
+- CQRS (MediatR)
+- Repository Pattern
+- Unit of Work
+- FluentValidation
+- Mapperly (Source Generator)
+
+**DevOps:**
+- Docker & Docker Compose
+- pgAdmin (Database Management)
+
+---
+
+## 👥 კონტრიბუცია
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
 ## 📄 License
 
 MIT License
+
+
 
