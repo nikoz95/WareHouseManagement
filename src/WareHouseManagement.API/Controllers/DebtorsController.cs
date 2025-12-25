@@ -5,7 +5,7 @@ using WareHouseManagement.Application.Features.Debtors.Queries;
 namespace WareHouseManagement.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/debtors")]
 public class DebtorsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -16,9 +16,11 @@ public class DebtorsController : ControllerBase
     }
 
     /// <summary>
-    /// ყველა დებიტორის მიღება (ან კონკრეტული კომპანიის დებიტორები)
+    /// Get all debtors with optional company filter
     /// </summary>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAll([FromQuery] Guid? companyId = null)
     {
         var query = new GetAllDebtorsQuery
@@ -31,7 +33,7 @@ public class DebtorsController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return Ok(result);
+        return Ok(result.Data);
     }
 }
 

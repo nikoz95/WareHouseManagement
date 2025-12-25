@@ -6,7 +6,7 @@ using WareHouseManagement.Application.Features.CompanyLocations.Queries;
 namespace WareHouseManagement.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/companies/{companyId}/locations")]
 public class CompanyLocationsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -17,10 +17,12 @@ public class CompanyLocationsController : ControllerBase
     }
 
     /// <summary>
-    /// ყველა კომპანიის ლოკაციის მიღება (ან კონკრეტული კომპანიის ლოკაციები)
+    /// Get all locations for a specific company
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] Guid? companyId = null)
+    [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAll(Guid companyId)
     {
         var query = new GetAllCompanyLocationsQuery
         {
@@ -32,21 +34,24 @@ public class CompanyLocationsController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return Ok(result);
+        return Ok(result.Data);
     }
 
     /// <summary>
-    /// ახალი კომპანიის ლოკაციის შექმნა
+    /// Create a new company location
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateCompanyLocationCommand command)
+    [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create(Guid companyId, [FromBody] CreateCompanyLocationCommand command)
     {
+        command.CompanyId = companyId;
         var result = await _mediator.Send(command);
 
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return CreatedAtAction(nameof(GetAll), new { companyId = result.Data?.CompanyId }, result);
+        return CreatedAtAction(nameof(GetAll), new { companyId }, result.Data);
     }
 }
 

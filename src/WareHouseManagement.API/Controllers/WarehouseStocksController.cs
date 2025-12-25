@@ -6,7 +6,7 @@ using WareHouseManagement.Application.Features.WarehouseStocks.Queries;
 namespace WareHouseManagement.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/warehouse-stocks")]
 public class WarehouseStocksController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -17,9 +17,11 @@ public class WarehouseStocksController : ControllerBase
     }
 
     /// <summary>
-    /// ყველა საწყობის მარაგის მიღება
+    /// Get all warehouse stocks with optional filtering
     /// </summary>
     [HttpGet]
+    [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetAll(
         [FromQuery] Guid? warehouseLocationId = null,
         [FromQuery] Guid? productId = null,
@@ -39,15 +41,17 @@ public class WarehouseStocksController : ControllerBase
         var result = await _mediator.Send(query);
 
         if (!result.IsSuccess)
-            return BadRequest(result);
+            return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return Ok(result);
+        return Ok(result.Data);
     }
 
     /// <summary>
-    /// ახალი საწყობის მარაგის დამატება
+    /// Create a new warehouse stock entry
     /// </summary>
     [HttpPost]
+    [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Create([FromBody] CreateWarehouseStockCommand command)
     {
         var result = await _mediator.Send(command);
@@ -55,7 +59,7 @@ public class WarehouseStocksController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return CreatedAtAction(nameof(GetAll), new { }, result);
+        return CreatedAtAction(nameof(GetAll), new { id = result.Data?.Id }, result.Data);
     }
 }
 

@@ -6,7 +6,7 @@ using WareHouseManagement.Application.Features.WarehouseLocations.Queries;
 namespace WareHouseManagement.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/warehouses/{warehouseId}/locations")]
 public class WarehouseLocationsController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -17,10 +17,12 @@ public class WarehouseLocationsController : ControllerBase
     }
 
     /// <summary>
-    /// ყველა საწყობის ლოკაციის მიღება (ან კონკრეტული საწყობის ლოკაციები)
+    /// Get all warehouse locations for a specific warehouse
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] Guid? warehouseId = null)
+    [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAll(Guid warehouseId)
     {
         var query = new GetAllWarehouseLocationsQuery
         {
@@ -32,21 +34,24 @@ public class WarehouseLocationsController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return Ok(result);
+        return Ok(result.Data);
     }
 
     /// <summary>
-    /// ახალი საწყობის ლოკაციის შექმნა
+    /// Create a new warehouse location
     /// </summary>
     [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CreateWarehouseLocationCommand command)
+    [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create(Guid warehouseId, [FromBody] CreateWarehouseLocationCommand command)
     {
+        command.WarehouseId = warehouseId;
         var result = await _mediator.Send(command);
 
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return CreatedAtAction(nameof(GetAll), new { warehouseId = result.Data?.WarehouseId }, result);
+        return CreatedAtAction(nameof(GetAll), new { warehouseId }, result.Data);
     }
 }
 

@@ -1,11 +1,11 @@
-﻿using MediatR;
+﻿﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WareHouseManagement.Application.Features.Orders.Commands;
 
 namespace WareHouseManagement.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/orders")]
 public class OrdersController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -15,15 +15,20 @@ public class OrdersController : ControllerBase
         _mediator = mediator;
     }
 
+    /// <summary>
+    /// Create a new order
+    /// </summary>
     [HttpPost]
-    public async Task<IActionResult> CreateOrder([FromBody] CreateOrderCommand command)
+    [ProducesResponseType(typeof(object), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create([FromBody] CreateOrderCommand command)
     {
         var result = await _mediator.Send(command);
 
         if (!result.IsSuccess)
-            return BadRequest(result);
+            return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return Ok(result);
+        return CreatedAtAction(nameof(Create), new { id = result.Data?.Id }, result.Data);
     }
 }
 

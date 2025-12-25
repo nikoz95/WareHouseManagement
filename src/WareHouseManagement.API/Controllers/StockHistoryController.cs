@@ -6,7 +6,7 @@ using WareHouseManagement.Domain.Enums;
 namespace WareHouseManagement.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/warehouse-stocks/history")]
 public class StockHistoryController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -17,10 +17,12 @@ public class StockHistoryController : ControllerBase
     }
 
     /// <summary>
-    /// საწყობის მარაგის ისტორიის მიღება (ფილტრებით)
+    /// Get warehouse stock history with optional filters
     /// </summary>
     [HttpGet]
-    public async Task<IActionResult> GetHistory(
+    [ProducesResponseType(typeof(IEnumerable<object>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> GetAll(
         [FromQuery] Guid? warehouseStockId = null,
         [FromQuery] Guid? productId = null,
         [FromQuery] Guid? orderId = null,
@@ -43,7 +45,7 @@ public class StockHistoryController : ControllerBase
         if (!result.IsSuccess)
             return BadRequest(new { error = result.Message, errors = result.Errors });
 
-        return Ok(result);
+        return Ok(result.Data);
     }
 }
 
