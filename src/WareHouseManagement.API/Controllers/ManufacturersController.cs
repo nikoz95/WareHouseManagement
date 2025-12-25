@@ -44,5 +44,20 @@ public class ManufacturersController : ControllerBase
 
         return CreatedAtAction(nameof(GetAll), new { }, result);
     }
+
+    /// <summary>
+    /// მწარმოებლის წაშლა
+    /// </summary>
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var command = new DeleteManufacturerCommand { Id = id };
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+            return BadRequest(new { error = result.Message, errors = result.Errors });
+
+        return Ok(result);
+    }
 }
 

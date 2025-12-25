@@ -44,5 +44,20 @@ public class WarehousesController : ControllerBase
 
         return CreatedAtAction(nameof(GetAll), new { }, result);
     }
+
+    /// <summary>
+    /// საწყობის წაშლა
+    /// </summary>
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var command = new DeleteWarehouseCommand { Id = id };
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+            return BadRequest(new { error = result.Message, errors = result.Errors });
+
+        return Ok(result);
+    }
 }
 

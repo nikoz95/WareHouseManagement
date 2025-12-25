@@ -1,4 +1,4 @@
-﻿using MediatR;
+﻿﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WareHouseManagement.Application.Features.Products.Commands;
 using WareHouseManagement.Application.Features.Products.Queries;
@@ -36,6 +36,21 @@ public class ProductsController : ControllerBase
             return BadRequest(result);
 
         return CreatedAtAction(nameof(GetAll), new { id = result.Data?.Id }, result);
+    }
+
+    /// <summary>
+    /// პროდუქტის წაშლა
+    /// </summary>
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var command = new DeleteProductCommand { Id = id };
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+            return BadRequest(new { error = result.Message, errors = result.Errors });
+
+        return Ok(result);
     }
 }
 
