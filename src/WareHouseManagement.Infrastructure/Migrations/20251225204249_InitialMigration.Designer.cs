@@ -9,11 +9,11 @@ using WareHouseManagement.Infrastructure.Data;
 
 #nullable disable
 
-namespace WareHouseManagement.Infrastructure.Data.Migrations
+namespace WareHouseManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251225011221_AddWarehouseStockHistory")]
-    partial class AddWarehouseStockHistory
+    [Migration("20251225204249_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -650,7 +650,7 @@ namespace WareHouseManagement.Infrastructure.Data.Migrations
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
                             Abbreviation = "ც",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381),
+                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა ცალების მიხედვით",
                             IsActive = true,
@@ -659,14 +659,14 @@ namespace WareHouseManagement.Infrastructure.Data.Migrations
                             NameEn = "Piece",
                             NameKa = "ცალი",
                             UnitType = 0,
-                            UpdatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381)
+                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
                             Abbreviation = "ლ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381),
+                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
                             DefaultValue = 0.5m,
                             Description = "პროდუქტის მოცულობა ლიტრებში",
                             IsActive = true,
@@ -676,14 +676,14 @@ namespace WareHouseManagement.Infrastructure.Data.Migrations
                             NameEn = "Liter",
                             NameKa = "ლიტრი",
                             UnitType = 1,
-                            UpdatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381)
+                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
                             Abbreviation = "მლ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381),
+                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
                             DefaultValue = 500m,
                             Description = "პროდუქტის მოცულობა მილილიტრებში",
                             IsActive = true,
@@ -693,14 +693,14 @@ namespace WareHouseManagement.Infrastructure.Data.Migrations
                             NameEn = "Milliliter",
                             NameKa = "მილილიტრი",
                             UnitType = 2,
-                            UpdatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381)
+                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000004"),
                             Abbreviation = "კგ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381),
+                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
                             DefaultValue = 1m,
                             Description = "პროდუქტის წონა კილოგრამებში",
                             IsActive = true,
@@ -710,14 +710,14 @@ namespace WareHouseManagement.Infrastructure.Data.Migrations
                             NameEn = "Kilogram",
                             NameKa = "კილოგრამი",
                             UnitType = 3,
-                            UpdatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381)
+                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
                             Abbreviation = "გ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381),
+                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
                             DefaultValue = 100m,
                             Description = "პროდუქტის წონა გრამებში",
                             IsActive = true,
@@ -727,14 +727,14 @@ namespace WareHouseManagement.Infrastructure.Data.Migrations
                             NameEn = "Gram",
                             NameKa = "გრამი",
                             UnitType = 4,
-                            UpdatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381)
+                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
                             Abbreviation = "ყთ",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381),
+                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა ყუთების მიხედვით",
                             IsActive = true,
@@ -743,14 +743,14 @@ namespace WareHouseManagement.Infrastructure.Data.Migrations
                             NameEn = "Box",
                             NameKa = "ყუთი",
                             UnitType = 5,
-                            UpdatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381)
+                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
                             Abbreviation = "პქ",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381),
+                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა პაკეტების მიხედვით",
                             IsActive = true,
@@ -759,7 +759,7 @@ namespace WareHouseManagement.Infrastructure.Data.Migrations
                             NameEn = "Package",
                             NameKa = "პაკეტი",
                             UnitType = 6,
-                            UpdatedAt = new DateTime(2025, 12, 25, 1, 12, 21, 216, DateTimeKind.Utc).AddTicks(381)
+                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
                         });
                 });
 

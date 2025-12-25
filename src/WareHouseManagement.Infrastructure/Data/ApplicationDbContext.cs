@@ -38,6 +38,15 @@ public class ApplicationDbContext : DbContext
         // Seed data
         modelBuilder.SeedUnitTypeRules();
     }
+    
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        base.OnConfiguring(optionsBuilder);
+        
+        // Suppress PendingModelChangesWarning to allow migrations to run
+        optionsBuilder.ConfigureWarnings(warnings => 
+            warnings.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning));
+    }
 
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
     {

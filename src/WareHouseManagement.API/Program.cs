@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Application;
 using WareHouseManagement.Infrastructure;
 using WareHouseManagement.Infrastructure.Data;
+using WareHouseManagement.Infrastructure.Data.Seed;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,6 +37,9 @@ using (var scope = app.Services.CreateScope())
         var context = services.GetRequiredService<ApplicationDbContext>();
         await context.Database.MigrateAsync();
         Console.WriteLine("Database migrations applied successfully.");
+        
+        // Seed initial data
+        await DatabaseSeeder.SeedAsync(context);
     }
     catch (Exception ex)
     {
