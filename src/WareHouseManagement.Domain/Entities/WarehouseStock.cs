@@ -1,4 +1,4 @@
-﻿﻿using WareHouseManagement.Domain.Common;
+﻿﻿﻿using WareHouseManagement.Domain.Common;
 
 namespace WareHouseManagement.Domain.Entities;
 
@@ -44,6 +44,12 @@ public class WarehouseStock : BaseEntity
     /// მხოლოდ ალკოჰოლური პროდუქტებისთვის
     /// </summary>
     public AlcoholicStockDetails? AlcoholicDetails { get; set; }
+    
+    /// <summary>
+    /// მარაგის ცვლილებების ისტორია
+    /// One-to-Many relationship
+    /// </summary>
+    public ICollection<WarehouseStockHistory> StockHistories { get; set; } = new List<WarehouseStockHistory>();
 }
 
 /// <summary>

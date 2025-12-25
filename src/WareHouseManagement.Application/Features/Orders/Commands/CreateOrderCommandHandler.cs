@@ -90,9 +90,30 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                     if (stock.Quantity > 0)
                     {
                         var quantityToTake = Math.Min(stock.Quantity, remainingQuantity);
+                        var quantityBefore = stock.Quantity;
+                        
+                        // საწყობის რაოდენობის შემცირება
                         stock.Quantity -= quantityToTake;
                         stock.UpdatedAt = DateTime.UtcNow;
                         remainingQuantity -= quantityToTake;
+                        
+                        // ისტორიაში ჩაწერა
+                        var stockHistory = new Domain.Entities.WarehouseStockHistory
+                        {
+                            Id = Guid.NewGuid(),
+                            WarehouseStockId = stock.Id,
+                            TransactionType = StockTransactionType.Out,
+                            QuantityChange = -quantityToTake, // უარყოფითი რადგან გასვლაა
+                            QuantityBefore = quantityBefore,
+                            QuantityAfter = stock.Quantity,
+                            OrderId = order.Id,
+                            Reason = $"შეკვეთა #{orderNumber} - {product.Name}",
+                            PerformedBy = "System", // TODO: ჩაანაცვლეთ რეალური მომხმარებლით
+                            TransactionDate = DateTime.UtcNow,
+                            CreatedAt = DateTime.UtcNow
+                        };
+                        
+                        stock.StockHistories.Add(stockHistory);
                     }
                 }
 
@@ -124,7 +145,8 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
             };
 
             await _unitOfWork.Debtors.AddAsync(debtor);
-            await _unitOfWork.SaveChangesAsync();
+            
+            // ✅ ყველაფერი წარმატებით შესრულდა - დავადასტუროთ ტრანზაქცია
             await _unitOfWork.CommitTransactionAsync();
 
             var orderDto = _mapper.MapToOrderDto(order);
@@ -132,6 +154,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         }
         catch (Exception ex)
         {
+            // ❌ შეცდომის შემთხვევაში - ყველაფერი უკან დაბრუნდება
             await _unitOfWork.RollbackTransactionAsync();
             return Result<OrderDto>.Failure($"შეცდომა შეკვეთის შექმნისას: {ex.Message}");
         }

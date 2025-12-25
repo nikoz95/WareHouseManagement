@@ -19,7 +19,8 @@ public class UnitOfWork : IUnitOfWork
         IManufacturerRepository manufacturers,
         IUnitTypeRuleRepository unitTypeRules,
         IProductDetailsRepository productDetails,
-        IAlcoholicProductDetailsRepository alcoholicProductDetails)
+        IAlcoholicProductDetailsRepository alcoholicProductDetails,
+        IWarehouseStockHistoryRepository warehouseStockHistories)
     {
         _context = context;
         Companies = companies;
@@ -31,6 +32,7 @@ public class UnitOfWork : IUnitOfWork
         UnitTypeRules = unitTypeRules;
         ProductDetails = productDetails;
         AlcoholicProductDetails = alcoholicProductDetails;
+        WarehouseStockHistories = warehouseStockHistories;
     }
 
     public ICompanyRepository Companies { get; }
@@ -42,6 +44,7 @@ public class UnitOfWork : IUnitOfWork
     public IUnitTypeRuleRepository UnitTypeRules { get; }
     public IProductDetailsRepository ProductDetails { get; }
     public IAlcoholicProductDetailsRepository AlcoholicProductDetails { get; }
+    public IWarehouseStockHistoryRepository WarehouseStockHistories { get; }
 
     public async Task<int> SaveChangesAsync()
     {

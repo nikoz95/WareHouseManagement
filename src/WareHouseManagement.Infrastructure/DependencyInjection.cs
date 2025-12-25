@@ -1,4 +1,4 @@
-﻿﻿﻿using Microsoft.EntityFrameworkCore;
+﻿﻿﻿﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using WareHouseManagement.Domain.Interfaces;
@@ -27,6 +27,7 @@ public static class DependencyInjection
         services.AddScoped<IUnitTypeRuleRepository, UnitTypeRuleRepository>();
         services.AddScoped<IProductDetailsRepository, ProductDetailsRepository>();
         services.AddScoped<IAlcoholicProductDetailsRepository, AlcoholicProductDetailsRepository>();
+        services.AddScoped<IWarehouseStockHistoryRepository, WarehouseStockHistoryRepository>();
         
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();

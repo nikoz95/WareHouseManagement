@@ -1,4 +1,4 @@
-﻿version: '3.8'
+version: '3.8'
 
 services:
   postgres:
@@ -44,3 +44,4 @@ volumes:
 networks:
   warehouse_network:
     driver: bridge
+

@@ -11,6 +11,7 @@ public interface IUnitOfWork : IDisposable
     IUnitTypeRuleRepository UnitTypeRules { get; }
     IProductDetailsRepository ProductDetails { get; }
     IAlcoholicProductDetailsRepository AlcoholicProductDetails { get; }
+    IWarehouseStockHistoryRepository WarehouseStockHistories { get; }
     
     Task<int> SaveChangesAsync();
     Task BeginTransactionAsync();
