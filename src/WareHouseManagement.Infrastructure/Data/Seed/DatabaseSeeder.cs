@@ -39,7 +39,7 @@ public static class DatabaseSeeder
         // 2. კომპანიები (რესტორანი და ბარი)
         var restaurantCompany = new Company
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("dcf5faa7-aa41-4875-a356-00b862d461e0"), // ფიქსირებული ID თქვენი მოთხოვნისთვის
             Name = "რესტორანი გურმანია",
             TaxId = "123456789",
             CompanyType = CompanyType.Restaurant,
@@ -60,6 +60,58 @@ public static class DatabaseSeeder
         };
 
         await context.Companies.AddRangeAsync(new[] { restaurantCompany, barCompany });
+        await context.SaveChangesAsync();
+
+        // 2.1 კომპანიების ლოკაციები
+        var companyLocations = new List<CompanyLocation>
+        {
+            new CompanyLocation
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = restaurantCompany.Id,
+                LocationName = "გურმანია - საბურთალო (მთავარი)",
+                Address = "თბილისი, ვაჟა-ფშაველას 45",
+                City = "თბილისი",
+                Phone = "+995-555-111-222",
+                ContactPerson = "გიორგი მეძებურაშვილი",
+                CreatedAt = DateTime.UtcNow
+            },
+            new CompanyLocation
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = restaurantCompany.Id,
+                LocationName = "გურმანია - ვაკე",
+                Address = "თბილისი, ჭავჭავაძის 12",
+                City = "თბილისი",
+                Phone = "+995-555-333-444",
+                ContactPerson = "ნინო კვირიკაშვილი",
+                CreatedAt = DateTime.UtcNow
+            },
+            new CompanyLocation
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = barCompany.Id,
+                LocationName = "ვინოთეკა - თბილისი (მთავარი)",
+                Address = "თბილისი, აღმაშენებლის 126",
+                City = "თბილისი",
+                Phone = "+995-555-555-666",
+                ContactPerson = "დავით ღვინჯილია",
+                CreatedAt = DateTime.UtcNow
+            },
+            new CompanyLocation
+            {
+                Id = Guid.NewGuid(),
+                CompanyId = barCompany.Id,
+                LocationName = "ვინოთეკა - ბათუმი",
+                Address = "ბათუმი, რუსთაველის 55",
+                City = "ბათუმი",
+                Phone = "+995-555-777-888",
+                ContactPerson = "მარიამ ბერიძე",
+                CreatedAt = DateTime.UtcNow
+            }
+        };
+
+        await context.CompanyLocations.AddRangeAsync(companyLocations);
         await context.SaveChangesAsync();
 
         // 3. საწყობები
@@ -83,7 +135,7 @@ public static class DatabaseSeeder
         // 4. საწყობის ლოკაციები
         var location1 = new WarehouseLocation
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("312b4a69-fa8b-4ea1-bcd4-12cf3af764f9"), // ფიქსირებული ID თქვენი მოთხოვნისთვის
             WarehouseId = warehouse1.Id,
             LocationName = "A სექცია - თეთრი ღვინოები",
             Description = "ცენტრალური საწყობი, პირველი სართული",
@@ -108,7 +160,25 @@ public static class DatabaseSeeder
             CreatedAt = DateTime.UtcNow
         };
 
-        await context.WarehouseLocations.AddRangeAsync(new[] { location1, location2, location3 });
+        var location4 = new WarehouseLocation
+        {
+            Id = Guid.NewGuid(),
+            WarehouseId = warehouse1.Id,
+            LocationName = "D სექცია - სიდრი და ლუდი",
+            Description = "ცენტრალური საწყობი, გაცივებული სექცია",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        var location5 = new WarehouseLocation
+        {
+            Id = Guid.NewGuid(),
+            WarehouseId = warehouse2.Id,
+            LocationName = "E სექცია - კეგები",
+            Description = "კახეთის საწყობი, კეგების საცავი",
+            CreatedAt = DateTime.UtcNow
+        };
+
+        await context.WarehouseLocations.AddRangeAsync(new[] { location1, location2, location3, location4, location5 });
         await context.SaveChangesAsync();
 
         // 5. პროდუქტები (10 ღვინო)

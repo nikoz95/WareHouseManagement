@@ -34,6 +34,23 @@ public class ManufacturersController : ControllerBase
     }
 
     /// <summary>
+    /// Get manufacturer by ID
+    /// </summary>
+    [HttpGet("{id}")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var query = new GetManufacturerByIdQuery { Id = id };
+        var result = await _mediator.Send(query);
+
+        if (!result.IsSuccess)
+            return NotFound(new { error = result.Message });
+
+        return Ok(result.Data);
+    }
+
+    /// <summary>
     /// Create a new manufacturer
     /// </summary>
     [HttpPost]

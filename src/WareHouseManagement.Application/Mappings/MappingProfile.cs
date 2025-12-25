@@ -1,4 +1,4 @@
-﻿﻿using Riok.Mapperly.Abstractions;
+﻿using Riok.Mapperly.Abstractions;
 using WareHouseManagement.Application.DTOs;
 using WareHouseManagement.Domain.Entities;
 
@@ -187,6 +187,47 @@ public partial class ApplicationMapper
             LastPaymentDate = debtor.LastPaymentDate,
             Notes = debtor.Notes,
             IsPartnerCompany = debtor.Company != null && debtor.Company.IsPartner
+        };
+    }
+
+    // Manufacturer mappings
+    public ManufacturerDto MapToManufacturerDto(Manufacturer manufacturer)
+    {
+        return new ManufacturerDto
+        {
+            Id = manufacturer.Id,
+            Name = manufacturer.Name,
+            Country = manufacturer.Country,
+            ContactInfo = manufacturer.ContactInfo,
+            Description = manufacturer.Description,
+            CreatedAt = manufacturer.CreatedAt
+        };
+    }
+
+    // Warehouse mappings
+    public WarehouseDto MapToWarehouseDto(Warehouse warehouse)
+    {
+        return new WarehouseDto
+        {
+            Id = warehouse.Id,
+            Name = warehouse.Name,
+            Address = warehouse.Address,
+            Description = warehouse.Description,
+            CreatedAt = warehouse.CreatedAt
+        };
+    }
+
+    // WarehouseLocation mappings
+    public WarehouseLocationDto MapToWarehouseLocationDto(WarehouseLocation location)
+    {
+        return new WarehouseLocationDto
+        {
+            Id = location.Id,
+            WarehouseId = location.WarehouseId,
+            WarehouseName = location.Warehouse?.Name,
+            LocationName = location.LocationName,
+            Description = location.Description,
+            CreatedAt = location.CreatedAt
         };
     }
 }

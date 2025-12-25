@@ -38,10 +38,15 @@ public class CompaniesController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public Task<IActionResult> GetById(Guid id)
+    public async Task<IActionResult> GetById(Guid id)
     {
-        // TODO: Implement GetCompanyByIdQuery
-        return Task.FromResult<IActionResult>(NotFound(new { error = "Company not found" }));
+        var query = new GetCompanyByIdQuery { Id = id };
+        var result = await _mediator.Send(query);
+
+        if (!result.IsSuccess)
+            return NotFound(new { error = result.Message });
+
+        return Ok(result.Data);
     }
 
     /// <summary>
@@ -67,10 +72,15 @@ public class CompaniesController : ControllerBase
     [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public Task<IActionResult> Update(Guid id, [FromBody] object command)
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateCompanyCommand command)
     {
-        // TODO: Implement UpdateCompanyCommand
-        return Task.FromResult<IActionResult>(NotFound(new { error = "Update not implemented" }));
+        command.Id = id;
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+            return BadRequest(new { error = result.Message, errors = result.Errors });
+
+        return Ok(result.Data);
     }
 
     /// <summary>

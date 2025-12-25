@@ -1,4 +1,4 @@
-﻿using System.Linq.Expressions;
+﻿﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Domain.Interfaces;
 using WareHouseManagement.Infrastructure.Data;
@@ -43,6 +43,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
         return Task.CompletedTask;
     }
 
+    public void Update(T entity)
+    {
+        _dbSet.Update(entity);
+    }
+
     public Task DeleteAsync(T entity)
     {
         _dbSet.Remove(entity);
@@ -58,6 +63,11 @@ public class GenericRepository<T> : IGenericRepository<T> where T : class
     public async Task<int> CountAsync()
     {
         return await _dbSet.CountAsync();
+    }
+
+    public IQueryable<T> GetQueryable()
+    {
+        return _dbSet.AsQueryable();
     }
 }
 
