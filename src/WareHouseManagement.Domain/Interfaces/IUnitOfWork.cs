@@ -1,4 +1,4 @@
-﻿﻿namespace WareHouseManagement.Domain.Interfaces;
+﻿﻿﻿namespace WareHouseManagement.Domain.Interfaces;
 
 public interface IUnitOfWork : IDisposable
 {
@@ -9,7 +9,8 @@ public interface IUnitOfWork : IDisposable
     IDebtorRepository Debtors { get; }
     IManufacturerRepository Manufacturers { get; }
     IUnitTypeRuleRepository UnitTypeRules { get; }
-    IAlcoholicProductRepository AlcoholicProducts { get; }
+    IProductDetailsRepository ProductDetails { get; }
+    IAlcoholicProductDetailsRepository AlcoholicProductDetails { get; }
     
     Task<int> SaveChangesAsync();
     Task BeginTransactionAsync();

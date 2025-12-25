@@ -1,4 +1,4 @@
-﻿﻿using WareHouseManagement.Domain.Common;
+﻿﻿﻿using WareHouseManagement.Domain.Common;
 
 namespace WareHouseManagement.Domain.Entities;
 
@@ -19,7 +19,7 @@ public class Product : BaseEntity
     
     // Navigation properties
     public UnitTypeRule UnitTypeRule { get; set; } = null!;
-    public AlcoholicProduct? AlcoholicProduct { get; set; } // თუ პროდუქტი ალკოჰოლურია
+    public ProductDetails? ProductDetails { get; set; } // დამატებითი დეტალური ინფორმაცია (ნებისმიერი ტიპის პროდუქტისთვის)
     public ICollection<CompanyProduct> CompanyProducts { get; set; } = new List<CompanyProduct>();
     public ICollection<WarehouseStock> WarehouseStocks { get; set; } = new List<WarehouseStock>();
     public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();

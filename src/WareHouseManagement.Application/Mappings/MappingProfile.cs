@@ -55,12 +55,29 @@ public partial class ApplicationMapper
             UnitTypeRuleId = product.UnitTypeRuleId,
             UnitTypeName = product.UnitTypeRule?.NameKa ?? "",
             UnitTypeAbbreviation = product.UnitTypeRule?.Abbreviation ?? "",
-            IsAlcoholic = product.AlcoholicProduct != null,
-            AlcoholPercentage = product.AlcoholicProduct?.AlcoholPercentage,
-            AlcoholType = product.AlcoholicProduct?.AlcoholType,
-            CountryOfOrigin = product.AlcoholicProduct?.CountryOfOrigin,
             CreatedAt = product.CreatedAt
         };
+
+        // დამატებითი დეტალური ინფორმაცია (თუ არსებობს)
+        if (product.ProductDetails != null)
+        {
+            dto.HasDetails = true;
+            dto.CountryOfOrigin = product.ProductDetails.CountryOfOrigin;
+            dto.ProductType = product.ProductDetails.ProductType;
+            dto.ShelfLifeMonths = product.ProductDetails.ShelfLifeMonths;
+            dto.AdditionalNotes = product.ProductDetails.AdditionalNotes;
+            
+            // ალკოჰოლური დეტალები (თუ არსებობს)
+            if (product.ProductDetails.AlcoholicDetails != null)
+            {
+                dto.IsAlcoholic = true;
+                dto.AlcoholPercentage = product.ProductDetails.AlcoholicDetails.AlcoholPercentage;
+                dto.Region = product.ProductDetails.AlcoholicDetails.Region;
+                dto.ServingTemperature = product.ProductDetails.AlcoholicDetails.ServingTemperature;
+                dto.QualityClass = product.ProductDetails.AlcoholicDetails.QualityClass;
+            }
+        }
+
         return dto;
     }
 
@@ -97,17 +114,16 @@ public partial class ApplicationMapper
             Id = orderItem.Id,
             ProductId = orderItem.ProductId,
             ProductName = orderItem.Product?.Name ?? "",
-            QuantityInBottles = orderItem.QuantityInBottles,
-            QuantityInBoxes = orderItem.QuantityInBoxes,
+            Quantity = orderItem.Quantity,
             UnitPrice = orderItem.UnitPrice,
             TotalPrice = orderItem.TotalPrice
         };
     }
 
-    // WarehouseStock mappings
+    // WarehouseStock mappings - with optional PackagingDetails and AlcoholicDetails
     public WarehouseStockDto MapToWarehouseStockDto(WarehouseStock warehouseStock)
     {
-        return new WarehouseStockDto
+        var dto = new WarehouseStockDto
         {
             Id = warehouseStock.Id,
             WarehouseLocationId = warehouseStock.WarehouseLocationId,
@@ -117,13 +133,40 @@ public partial class ApplicationMapper
             ProductName = warehouseStock.Product?.Name ?? "",
             ManufacturerId = warehouseStock.ManufacturerId,
             ManufacturerName = warehouseStock.Manufacturer?.Name ?? "",
-            BottlesPerBox = warehouseStock.BottlesPerBox,
-            QuantityInBottles = warehouseStock.QuantityInBottles,
-            QuantityInBoxes = warehouseStock.QuantityInBoxes,
+            Quantity = warehouseStock.Quantity,
             PurchasePrice = warehouseStock.PurchasePrice,
             ExpirationDate = warehouseStock.ExpirationDate,
             CreatedAt = warehouseStock.CreatedAt
         };
+
+        // Check if has packaging details (უნივერსალური - ნებისმიერი პროდუქტისთვის)
+        if (warehouseStock.PackagingDetails != null)
+        {
+            dto.PackagingType = warehouseStock.PackagingDetails.PackagingType;
+            dto.UnitsPerPackage = warehouseStock.PackagingDetails.UnitsPerPackage;
+            dto.FullPackagesCount = warehouseStock.PackagingDetails.FullPackagesCount;
+            dto.PartialPackagesCount = warehouseStock.PackagingDetails.PartialPackagesCount;
+            dto.UnitsInPartialPackages = warehouseStock.PackagingDetails.UnitsInPartialPackages;
+            dto.TotalPackagesCount = warehouseStock.PackagingDetails.TotalPackagesCount;
+            dto.TotalUnitsCount = warehouseStock.PackagingDetails.TotalUnitsCount;
+            dto.PackagingNotes = warehouseStock.PackagingDetails.Notes;
+        }
+
+        // Check if has alcoholic details
+        if (warehouseStock.AlcoholicDetails != null)
+        {
+            dto.StockType = "Alcoholic";
+            dto.BatchNumber = warehouseStock.AlcoholicDetails.BatchNumber;
+            dto.ExciseStampNumber = warehouseStock.AlcoholicDetails.ExciseStampNumber;
+            dto.CertificateNumber = warehouseStock.AlcoholicDetails.CertificateNumber;
+            dto.StorageTemperature = warehouseStock.AlcoholicDetails.StorageTemperature;
+        }
+        else
+        {
+            dto.StockType = "General";
+        }
+
+        return dto;
     }
 
     // Debtor mappings

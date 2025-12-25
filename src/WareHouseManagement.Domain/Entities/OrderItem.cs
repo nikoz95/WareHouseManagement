@@ -1,4 +1,4 @@
-﻿﻿using WareHouseManagement.Domain.Common;
+﻿﻿﻿using WareHouseManagement.Domain.Common;
 
 namespace WareHouseManagement.Domain.Entities;
 
@@ -9,9 +9,13 @@ public class OrderItem : BaseEntity
 {
     public Guid OrderId { get; set; }
     public Guid ProductId { get; set; }
-    public int BottlesPerBox { get; set; } = 6; // ყუთში ბოთლების რაოდენობა (შენახულია შეკვეთის დროს)
-    public int QuantityInBottles { get; set; }
-    public int QuantityInBoxes { get; set; }
+    
+    /// <summary>
+    /// რაოდენობა (პროდუქტის UnitTypeRule-ის მიხედვით)
+    /// მაგ: თუ პროდუქტი არის "ლიტრებში", მაშინ ეს იქნება ლიტრების რაოდენობა
+    /// </summary>
+    public decimal Quantity { get; set; }
+    
     public decimal UnitPrice { get; set; }
     public decimal TotalPrice { get; set; }
     

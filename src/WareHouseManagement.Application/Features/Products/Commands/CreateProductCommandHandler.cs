@@ -45,22 +45,44 @@ public class CreateProductCommandHandler(IUnitOfWork unitOfWork, ApplicationMapp
 
             await unitOfWork.Products.AddAsync(product);
             
-            // თუ პროდუქტი ალკოჰოლურია, შევქმნათ AlcoholicProduct ჩანაწერი
-            if (request.IsAlcoholic && request.AlcoholPercentage.HasValue)
+            // თუ არსებობს დამატებითი დეტალური ინფორმაცია, შევქმნათ ProductDetails ჩანაწერი
+            if (!string.IsNullOrEmpty(request.CountryOfOrigin) ||
+                !string.IsNullOrEmpty(request.ProductType) ||
+                request.ShelfLifeMonths.HasValue ||
+                !string.IsNullOrEmpty(request.AdditionalNotes) ||
+                request.AlcoholPercentage.HasValue)
             {
-                var alcoholicProduct = new AlcoholicProduct
+                var productDetails = new ProductDetails
                 {
                     Id = Guid.NewGuid(),
                     ProductId = product.Id,
-                    AlcoholPercentage = request.AlcoholPercentage.Value,
-                    AlcoholType = request.AlcoholType,
                     CountryOfOrigin = request.CountryOfOrigin,
+                    ProductType = request.ProductType,
                     ShelfLifeMonths = request.ShelfLifeMonths,
+                    AdditionalNotes = request.AdditionalNotes,
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 };
                 
-                await unitOfWork.AlcoholicProducts.AddAsync(alcoholicProduct);
+                await unitOfWork.ProductDetails.AddAsync(productDetails);
+                
+                // თუ ალკოჰოლური პროდუქტია, შევქმნათ AlcoholicProductDetails ჩანაწერი
+                if (request.AlcoholPercentage.HasValue)
+                {
+                    var alcoholicDetails = new AlcoholicProductDetails
+                    {
+                        Id = Guid.NewGuid(),
+                        ProductDetailsId = productDetails.Id,
+                        AlcoholPercentage = request.AlcoholPercentage.Value,
+                        Region = request.Region,
+                        ServingTemperature = request.ServingTemperature,
+                        QualityClass = request.QualityClass,
+                        CreatedAt = DateTime.UtcNow,
+                        UpdatedAt = DateTime.UtcNow
+                    };
+                    
+                    await unitOfWork.AlcoholicProductDetails.AddAsync(alcoholicDetails);
+                }
             }
             
             await unitOfWork.SaveChangesAsync();

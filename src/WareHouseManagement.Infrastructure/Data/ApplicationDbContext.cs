@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Infrastructure.Data.Seed;
 
@@ -22,7 +22,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Debtor> Debtors { get; set; }
     public DbSet<UnitTypeRule> UnitTypeRules { get; set; }
-    public DbSet<AlcoholicProduct> AlcoholicProducts { get; set; }
+    public DbSet<ProductDetails> ProductDetails { get; set; }
+    public DbSet<AlcoholicProductDetails> AlcoholicProductDetails { get; set; }
+    public DbSet<PackagingDetails> PackagingDetails { get; set; }
+    public DbSet<AlcoholicStockDetails> AlcoholicStockDetails { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

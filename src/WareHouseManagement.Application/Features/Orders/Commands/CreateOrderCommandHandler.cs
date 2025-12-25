@@ -1,4 +1,4 @@
-﻿﻿using MediatR;
+﻿﻿﻿using MediatR;
 using WareHouseManagement.Application.Common.Models;
 using WareHouseManagement.Application.DTOs;
 using WareHouseManagement.Application.Mappings;
@@ -58,24 +58,20 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
 
                 // საწყობიდან პროდუქტის სტოკების მიღება
                 var stocks = (await _unitOfWork.Warehouses.GetStockByProductAsync(itemDto.ProductId)).ToList();
-                var firstStock = stocks.FirstOrDefault();
-                if (firstStock == null)
+                if (!stocks.Any())
                 {
                     await _unitOfWork.RollbackTransactionAsync();
                     return Result<OrderDto>.Failure($"პროდუქტი არ არის საწყობში: {product.Name}");
                 }
                 
-                var bottlesPerBox = firstStock.BottlesPerBox;
-                var totalPrice = (itemDto.QuantityInBottles + itemDto.QuantityInBoxes * bottlesPerBox) * itemDto.UnitPrice;
+                var totalPrice = itemDto.Quantity * itemDto.UnitPrice;
 
                 var orderItem = new OrderItem
                 {
                     Id = Guid.NewGuid(),
                     OrderId = order.Id,
                     ProductId = itemDto.ProductId,
-                    BottlesPerBox = bottlesPerBox,
-                    QuantityInBottles = itemDto.QuantityInBottles,
-                    QuantityInBoxes = itemDto.QuantityInBoxes,
+                    Quantity = itemDto.Quantity,
                     UnitPrice = itemDto.UnitPrice,
                     TotalPrice = totalPrice,
                     CreatedAt = DateTime.UtcNow
@@ -85,35 +81,22 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                 totalAmount += totalPrice;
 
                 // საწყობიდან პროდუქტის გამოკლება
-                var totalNeededBottles = itemDto.QuantityInBottles + (itemDto.QuantityInBoxes * bottlesPerBox);
+                decimal remainingQuantity = itemDto.Quantity;
                 
-                int remainingBottles = totalNeededBottles;
                 foreach (var stock in stocks.OrderBy(s => s.ExpirationDate))
                 {
-                    if (remainingBottles <= 0) break;
+                    if (remainingQuantity <= 0) break;
 
-                    var availableBottles = stock.QuantityInBottles + (stock.QuantityInBoxes * stock.BottlesPerBox);
-                    
-                    if (availableBottles > 0)
+                    if (stock.Quantity > 0)
                     {
-                        var bottlesToTake = Math.Min(availableBottles, remainingBottles);
-                        
-                        // გამოკლება ბოთლებიდან
-                        stock.QuantityInBottles -= bottlesToTake;
-                        
-                        // თუ ბოთლები უარყოფითია, გადავიტანოთ ყუთებიდან
-                        while (stock.QuantityInBottles < 0 && stock.QuantityInBoxes > 0)
-                        {
-                            stock.QuantityInBoxes--;
-                            stock.QuantityInBottles += stock.BottlesPerBox;
-                        }
-                        
+                        var quantityToTake = Math.Min(stock.Quantity, remainingQuantity);
+                        stock.Quantity -= quantityToTake;
                         stock.UpdatedAt = DateTime.UtcNow;
-                        remainingBottles -= bottlesToTake;
+                        remainingQuantity -= quantityToTake;
                     }
                 }
 
-                if (remainingBottles > 0)
+                if (remainingQuantity > 0)
                 {
                     await _unitOfWork.RollbackTransactionAsync();
                     return Result<OrderDto>.Failure($"არასაკმარისი მარაგი პროდუქტისთვის: {product.Name}");

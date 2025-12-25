@@ -1,4 +1,4 @@
-﻿using WareHouseManagement.Domain.Enums;
+﻿﻿using WareHouseManagement.Domain.Enums;
 
 namespace WareHouseManagement.Application.DTOs;
 
@@ -29,8 +29,7 @@ public class OrderItemDto
     public Guid Id { get; set; }
     public Guid ProductId { get; set; }
     public string ProductName { get; set; } = string.Empty;
-    public int QuantityInBottles { get; set; }
-    public int QuantityInBoxes { get; set; }
+    public decimal Quantity { get; set; }
     public decimal UnitPrice { get; set; }
     public decimal TotalPrice { get; set; }
 }
@@ -48,8 +47,7 @@ public class CreateOrderDto
 public class CreateOrderItemDto
 {
     public Guid ProductId { get; set; }
-    public int QuantityInBottles { get; set; }
-    public int QuantityInBoxes { get; set; }
+    public decimal Quantity { get; set; }
     public decimal UnitPrice { get; set; }
 }
 
