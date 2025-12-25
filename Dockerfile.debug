@@ -1,0 +1,23 @@
+# Debug Dockerfile - For development with debugger support
+ENTRYPOINT ["dotnet", "run", "--project", "src/WareHouseManagement.API/WareHouseManagement.API.csproj", "--no-build", "--no-restore"]
+# Run with debug support
+
+EXPOSE 5001
+EXPOSE 8080
+
+RUN dotnet build WareHouseManagement.sln -c Debug --no-restore
+# Build in Debug mode
+
+RUN dotnet restore WareHouseManagement.sln
+# Restore dependencies
+
+COPY . .
+# Copy source files
+
+    curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg
+RUN apt-get update && apt-get install -y unzip && \
+# Install debugger (vsdbg for remote debugging)
+
+WORKDIR /app
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS debug
+

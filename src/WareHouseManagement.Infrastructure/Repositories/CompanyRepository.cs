@@ -33,8 +33,15 @@ public class CompanyRepository : GenericRepository<Company>, ICompanyRepository
     public async Task<Company?> GetCompanyWithLocationsAsync(Guid id)
     {
         return await _dbSet
-            .Include(c => c.CompanyLocations)
+            .Include(c => c.CompanyLocations.Where(cl => !cl.IsDeleted))
             .FirstOrDefaultAsync(c => c.Id == id);
+    }
+
+    public async Task<IEnumerable<Company>> GetAllCompaniesWithLocationsAsync()
+    {
+        return await _dbSet
+            .Include(c => c.CompanyLocations.Where(cl => !cl.IsDeleted))
+            .ToListAsync();
     }
 }
 

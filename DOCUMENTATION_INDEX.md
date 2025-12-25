@@ -11,6 +11,7 @@
 |-----|-------|------------------|
 | 🐳 **Docker-ით** | [DOCKER_START_GUIDE.md](./DOCKER_START_GUIDE.md) | Production-like setup, რეკომენდებული |
 | 💻 **ლოკალურად** | [LOCAL_START_GUIDE.md](./LOCAL_START_GUIDE.md) | Development, debugging |
+| 🐛 **Docker Debugging** | [DOCKER_DEBUG_GUIDE.md](./DOCKER_DEBUG_GUIDE.md) | Debug Docker containers, remote debugging |
 | ⚡ **სწრაფი** | [QUICK_START.md](./QUICK_START.md) | სწრაფი reference, cheat sheet |
 
 ---

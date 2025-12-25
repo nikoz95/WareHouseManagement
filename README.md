@@ -1,4 +1,4 @@
-﻿﻿# Warehouse Management System
+﻿﻿﻿# Warehouse Management System
 
 Clean Architecture აპლიკაცია საწყობის მართვისთვის, აგებული .NET 9.0, PostgreSQL და Docker-ით.
 
@@ -21,6 +21,7 @@ Clean Architecture აპლიკაცია საწყობის მა�
 **არჩევანი:**
 - 🐳 Docker-ით → [DOCKER_START_GUIDE.md](./DOCKER_START_GUIDE.md)
 - 💻 ლოკალურად → [LOCAL_START_GUIDE.md](./LOCAL_START_GUIDE.md)
+- 🐛 Docker Debugging → [DOCKER_DEBUG_GUIDE.md](./DOCKER_DEBUG_GUIDE.md)
 
 ---
 

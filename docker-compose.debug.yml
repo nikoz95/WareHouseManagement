@@ -1,0 +1,71 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: warehouse_postgres_debug
+    environment:
+      POSTGRES_DB: WareHouseManagementDb
+      POSTGRES_USER: warehouse_user
+      POSTGRES_PASSWORD: warehouse_pass_2024
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_debug_data:/var/lib/postgresql/data
+    networks:
+      - warehouse_network_debug
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U warehouse_user -d WareHouseManagementDb"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  api_debug:
+    build:
+      context: .
+      dockerfile: Dockerfile.debug
+    container_name: warehouse_api_debug
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=WareHouseManagementDb;Username=warehouse_user;Password=warehouse_pass_2024
+      - DOTNET_USE_POLLING_FILE_WATCHER=true
+    ports:
+      - "5000:8080"
+      - "5001:5001"  # Debug port
+    volumes:
+      - ./src:/app/src:cached  # Mount source for hot reload
+      - ./appsettings.Development.json:/app/appsettings.Development.json:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - warehouse_network_debug
+    cap_add:
+      - SYS_PTRACE  # Required for debugging
+    security_opt:
+      - seccomp:unconfined  # Required for debugging
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: warehouse_pgadmin_debug
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "8080:80"
+    networks:
+      - warehouse_network_debug
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin_debug_data:/var/lib/pgadmin
+
+volumes:
+  postgres_debug_data:
+  pgadmin_debug_data:
+
+networks:
+  warehouse_network_debug:
+    driver: bridge
+

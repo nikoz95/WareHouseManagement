@@ -17,14 +17,13 @@ public class GetAllCompanyLocationsQueryHandler(IUnitOfWork unitOfWork)
             if (request.CompanyId.HasValue)
             {
                 // მხოლოდ კონკრეტული კომპანიის ლოკაციები
-                var company = await unitOfWork.Companies.GetByIdAsync(request.CompanyId.Value);
+                var company = await unitOfWork.Companies.GetCompanyWithLocationsAsync(request.CompanyId.Value);
                 if (company == null)
                 {
                     return Result<List<CompanyLocationDto>>.Failure("კომპანია ვერ მოიძებნა");
                 }
 
                 locationDtos = company.CompanyLocations
-                    .Where(cl => !cl.IsDeleted)
                     .Select(cl => new CompanyLocationDto
                     {
                         Id = cl.Id,
@@ -42,11 +41,10 @@ public class GetAllCompanyLocationsQueryHandler(IUnitOfWork unitOfWork)
             else
             {
                 // ყველა ლოკაცია ყველა კომპანიისგან
-                var companies = await unitOfWork.Companies.GetAllAsync();
+                var companies = await unitOfWork.Companies.GetAllCompaniesWithLocationsAsync();
                 
                 locationDtos = companies
                     .SelectMany(c => c.CompanyLocations
-                        .Where(cl => !cl.IsDeleted)
                         .Select(cl => new CompanyLocationDto
                         {
                             Id = cl.Id,
