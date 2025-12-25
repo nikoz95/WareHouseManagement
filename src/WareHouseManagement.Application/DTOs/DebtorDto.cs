@@ -1,4 +1,4 @@
-﻿namespace WareHouseManagement.Application.DTOs;
+﻿﻿namespace WareHouseManagement.Application.DTOs;
 
 public class DebtorDto
 {
@@ -15,5 +15,6 @@ public class DebtorDto
     public DateTime? LastPaymentDate { get; set; }
     public string? Notes { get; set; }
     public bool IsPartnerCompany { get; set; }
+    public DateTime CreatedAt { get; set; }
 }
 
