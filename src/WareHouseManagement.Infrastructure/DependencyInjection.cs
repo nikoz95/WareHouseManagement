@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using WareHouseManagement.Domain.Interfaces;
 using WareHouseManagement.Infrastructure.Data;
 using WareHouseManagement.Infrastructure.Repositories;
+using WareHouseManagement.Infrastructure.Services;
 
 namespace WareHouseManagement.Infrastructure;
 
@@ -31,6 +32,9 @@ public static class DependencyInjection
         
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        // Services
+        services.AddScoped<IExcelImportService, ExcelImportService>();
 
         return services;
     }

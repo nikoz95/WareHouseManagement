@@ -1,0 +1,163 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WareHouseManagement.API</name>
+    </assembly>
+    <members>
+        <member name="M:WareHouseManagement.API.Controllers.CompaniesController.GetAll">
+            <summary>
+            Get all companies
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.CompaniesController.GetById(System.Guid)">
+            <summary>
+            Get company by ID
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.CompaniesController.Create(WareHouseManagement.Application.Features.Companies.Commands.CreateCompanyCommand)">
+            <summary>
+            Create a new company
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.CompaniesController.Update(System.Guid,System.Object)">
+            <summary>
+            Update an existing company
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.CompaniesController.Delete(System.Guid)">
+            <summary>
+            Delete a company (soft delete)
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.CompanyLocationsController.GetAll(System.Guid)">
+            <summary>
+            Get all locations for a specific company
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.CompanyLocationsController.Create(System.Guid,WareHouseManagement.Application.Features.CompanyLocations.Commands.CreateCompanyLocationCommand)">
+            <summary>
+            Create a new company location
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.DebtorsController.GetAll(System.Nullable{System.Guid})">
+            <summary>
+            Get all debtors with optional company filter
+            </summary>
+        </member>
+        <member name="T:WareHouseManagement.API.Controllers.ImportController">
+            <summary>
+            Excel Import/Export Operations
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ImportController.ImportProducts(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Import products from Excel file
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ImportController.ImportCompanies(Microsoft.AspNetCore.Http.IFormFile)">
+            <summary>
+            Import companies from Excel file
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ImportController.DownloadProductsTemplate">
+            <summary>
+            Download Excel template for products
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ImportController.DownloadCompaniesTemplate">
+            <summary>
+            Download Excel template for companies
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ManufacturersController.GetAll">
+            <summary>
+            Get all manufacturers
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ManufacturersController.Create(WareHouseManagement.Application.Features.Manufacturers.Commands.CreateManufacturerCommand)">
+            <summary>
+            Create a new manufacturer
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ManufacturersController.Delete(System.Guid)">
+            <summary>
+            Delete a manufacturer (soft delete)
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.OrdersController.Create(WareHouseManagement.Application.Features.Orders.Commands.CreateOrderCommand)">
+            <summary>
+            Create a new order
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ProductsController.GetAll">
+            <summary>
+            Get all products
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ProductsController.Create(WareHouseManagement.Application.Features.Products.Commands.CreateProductCommand)">
+            <summary>
+            Create a new product
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ProductsController.Delete(System.Guid)">
+            <summary>
+            Delete a product (soft delete)
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.StockHistoryController.GetAll(System.Nullable{System.Guid},System.Nullable{System.Guid},System.Nullable{System.Guid},System.Nullable{WareHouseManagement.Domain.Enums.StockTransactionType},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get warehouse stock history with optional filters
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.UnitTypeRulesController.GetAll(System.Nullable{System.Boolean})">
+            <summary>
+            Get all unit type rules
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.UnitTypeRulesController.Create(WareHouseManagement.Application.Features.UnitTypeRules.Commands.CreateUnitTypeRuleCommand)">
+            <summary>
+            Create a new unit type rule
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.UnitTypeRulesController.Delete(System.Guid)">
+            <summary>
+            Delete a unit type rule (soft delete)
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.WarehouseLocationsController.GetAll(System.Guid)">
+            <summary>
+            Get all warehouse locations for a specific warehouse
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.WarehouseLocationsController.Create(System.Guid,WareHouseManagement.Application.Features.WarehouseLocations.Commands.CreateWarehouseLocationCommand)">
+            <summary>
+            Create a new warehouse location
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.WarehousesController.GetAll">
+            <summary>
+            Get all warehouses
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.WarehousesController.Create(WareHouseManagement.Application.Features.Warehouses.Commands.CreateWarehouseCommand)">
+            <summary>
+            Create a new warehouse
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.WarehousesController.Delete(System.Guid)">
+            <summary>
+            Delete a warehouse (soft delete)
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.WarehouseStocksController.GetAll(System.Nullable{System.Guid},System.Nullable{System.Guid},System.Nullable{System.Guid},System.Boolean,System.Boolean)">
+            <summary>
+            Get all warehouse stocks with optional filtering
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.WarehouseStocksController.Create(WareHouseManagement.Application.Features.WarehouseStocks.Commands.CreateWarehouseStockCommand)">
+            <summary>
+            Create a new warehouse stock entry
+            </summary>
+        </member>
+    </members>
+</doc>
