@@ -19,7 +19,7 @@
             Create a new company
             </summary>
         </member>
-        <member name="M:WareHouseManagement.API.Controllers.CompaniesController.Update(System.Guid,System.Object)">
+        <member name="M:WareHouseManagement.API.Controllers.CompaniesController.Update(System.Guid,WareHouseManagement.Application.Features.Companies.Commands.UpdateCompanyCommand)">
             <summary>
             Update an existing company
             </summary>
@@ -74,6 +74,11 @@
             Get all manufacturers
             </summary>
         </member>
+        <member name="M:WareHouseManagement.API.Controllers.ManufacturersController.GetById(System.Guid)">
+            <summary>
+            Get manufacturer by ID
+            </summary>
+        </member>
         <member name="M:WareHouseManagement.API.Controllers.ManufacturersController.Create(WareHouseManagement.Application.Features.Manufacturers.Commands.CreateManufacturerCommand)">
             <summary>
             Create a new manufacturer
@@ -84,6 +89,16 @@
             Delete a manufacturer (soft delete)
             </summary>
         </member>
+        <member name="M:WareHouseManagement.API.Controllers.OrdersController.GetAll(System.Nullable{System.Guid},System.Nullable{WareHouseManagement.Domain.Enums.OrderStatus},System.Nullable{System.DateTime},System.Nullable{System.DateTime})">
+            <summary>
+            Get all orders with optional filtering
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.OrdersController.GetById(System.Guid)">
+            <summary>
+            Get order by ID
+            </summary>
+        </member>
         <member name="M:WareHouseManagement.API.Controllers.OrdersController.Create(WareHouseManagement.Application.Features.Orders.Commands.CreateOrderCommand)">
             <summary>
             Create a new order
@@ -92,6 +107,11 @@
         <member name="M:WareHouseManagement.API.Controllers.ProductsController.GetAll">
             <summary>
             Get all products
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.ProductsController.GetById(System.Guid)">
+            <summary>
+            Get product by ID
             </summary>
         </member>
         <member name="M:WareHouseManagement.API.Controllers.ProductsController.Create(WareHouseManagement.Application.Features.Products.Commands.CreateProductCommand)">
@@ -137,6 +157,11 @@
         <member name="M:WareHouseManagement.API.Controllers.WarehousesController.GetAll">
             <summary>
             Get all warehouses
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.WarehousesController.GetById(System.Guid)">
+            <summary>
+            Get warehouse by ID
             </summary>
         </member>
         <member name="M:WareHouseManagement.API.Controllers.WarehousesController.Create(WareHouseManagement.Application.Features.Warehouses.Commands.CreateWarehouseCommand)">
