@@ -50,6 +50,9 @@ public class WarehouseStockHistoryConfiguration : IEntityTypeConfiguration<Wareh
         builder.HasIndex(wsh => wsh.OrderId);
         builder.HasIndex(wsh => wsh.TransactionDate);
         builder.HasIndex(wsh => wsh.TransactionType);
+        
+        // Global query filter to match WarehouseStock's filter
+        builder.HasQueryFilter(wsh => !wsh.IsDeleted);
     }
 }
 
