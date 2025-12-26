@@ -1,4 +1,4 @@
-﻿﻿﻿using Microsoft.EntityFrameworkCore.Storage;
+﻿﻿﻿﻿using Microsoft.EntityFrameworkCore.Storage;
 using WareHouseManagement.Domain.Interfaces;
 using WareHouseManagement.Infrastructure.Data;
 
@@ -20,7 +20,9 @@ public class UnitOfWork : IUnitOfWork
         IUnitTypeRuleRepository unitTypeRules,
         IProductDetailsRepository productDetails,
         IAlcoholicProductDetailsRepository alcoholicProductDetails,
-        IWarehouseStockHistoryRepository warehouseStockHistories)
+        IWarehouseStockHistoryRepository warehouseStockHistories,
+        IUserRepository users,
+        IRefreshTokenRepository refreshTokens)
     {
         _context = context;
         Companies = companies;
@@ -33,6 +35,8 @@ public class UnitOfWork : IUnitOfWork
         ProductDetails = productDetails;
         AlcoholicProductDetails = alcoholicProductDetails;
         WarehouseStockHistories = warehouseStockHistories;
+        Users = users;
+        RefreshTokens = refreshTokens;
     }
 
     public ICompanyRepository Companies { get; }
@@ -45,6 +49,8 @@ public class UnitOfWork : IUnitOfWork
     public IProductDetailsRepository ProductDetails { get; }
     public IAlcoholicProductDetailsRepository AlcoholicProductDetails { get; }
     public IWarehouseStockHistoryRepository WarehouseStockHistories { get; }
+    public IUserRepository Users { get; }
+    public IRefreshTokenRepository RefreshTokens { get; }
 
     public async Task<int> SaveChangesAsync()
     {

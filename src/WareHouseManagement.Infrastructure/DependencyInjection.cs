@@ -1,6 +1,7 @@
-﻿﻿﻿﻿using Microsoft.EntityFrameworkCore;
+﻿﻿﻿﻿﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using WareHouseManagement.Application.Common.Interfaces;
 using WareHouseManagement.Domain.Interfaces;
 using WareHouseManagement.Infrastructure.Data;
 using WareHouseManagement.Infrastructure.Repositories;
@@ -29,12 +30,15 @@ public static class DependencyInjection
         services.AddScoped<IProductDetailsRepository, ProductDetailsRepository>();
         services.AddScoped<IAlcoholicProductDetailsRepository, AlcoholicProductDetailsRepository>();
         services.AddScoped<IWarehouseStockHistoryRepository, WarehouseStockHistoryRepository>();
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
         
         // Unit of Work
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         // Services
         services.AddScoped<IExcelImportService, ExcelImportService>();
+        services.AddScoped<IJwtTokenService, JwtTokenService>();
 
         return services;
     }

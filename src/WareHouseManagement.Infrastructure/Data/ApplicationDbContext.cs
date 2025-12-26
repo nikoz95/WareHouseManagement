@@ -1,4 +1,4 @@
-﻿﻿﻿using Microsoft.EntityFrameworkCore;
+﻿﻿﻿﻿using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Infrastructure.Data.Seed;
 
@@ -27,6 +27,14 @@ public class ApplicationDbContext : DbContext
     public DbSet<PackagingDetails> PackagingDetails { get; set; }
     public DbSet<AlcoholicStockDetails> AlcoholicStockDetails { get; set; }
     public DbSet<WarehouseStockHistory> WarehouseStockHistories { get; set; }
+    
+    // Authentication
+    public DbSet<User> Users { get; set; }
+    public DbSet<Role> Roles { get; set; }
+    public DbSet<Permission> Permissions { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<RolePermission> RolePermissions { get; set; }
+    public DbSet<RefreshToken> RefreshTokens { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
