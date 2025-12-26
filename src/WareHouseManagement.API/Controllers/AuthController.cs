@@ -7,7 +7,7 @@ using WareHouseManagement.Application.Features.Auth.Commands;
 namespace WareHouseManagement.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/auth")]
 public class AuthController : ControllerBase
 {
     private readonly IMediator _mediator;
