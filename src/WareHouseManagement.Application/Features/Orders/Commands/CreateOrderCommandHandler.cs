@@ -110,10 +110,11 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
                             Reason = $"შეკვეთა #{orderNumber} - {product.Name}",
                             PerformedBy = "System", // TODO: ჩაანაცვლეთ რეალური მომხმარებლით
                             TransactionDate = DateTime.UtcNow,
-                            CreatedAt = DateTime.UtcNow
+                            CreatedAt = DateTime.UtcNow,
+                            UpdatedAt = DateTime.UtcNow
                         };
                         
-                        stock.StockHistories.Add(stockHistory);
+                        await _unitOfWork.WarehouseStockHistories.AddAsync(stockHistory);
                     }
                 }
 

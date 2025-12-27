@@ -1,4 +1,6 @@
-﻿﻿﻿namespace WareHouseManagement.Application.DTOs;
+﻿﻿﻿using WareHouseManagement.Domain.Enums;
+
+namespace WareHouseManagement.Application.DTOs;
 
 public class WarehouseStockDto
 {
@@ -16,7 +18,7 @@ public class WarehouseStockDto
     public string StockType { get; set; } = string.Empty; // "Alcoholic" or "General"
     
     // შეფუთვის დეტალები (უნივერსალური - ნებისმიერი პროდუქტისთვის)
-    public string? PackagingType { get; set; } // "Box", "Package", "Carton" და ა.შ.
+    public PackagingType? PackagingType { get; set; }
     public int? UnitsPerPackage { get; set; }
     public int? FullPackagesCount { get; set; }
     public int? PartialPackagesCount { get; set; }
@@ -47,7 +49,7 @@ public class CreateWarehouseStockDto
     public DateTime? ExpirationDate { get; set; }
     
     // შეფუთვის დეტალები (optional - ნებისმიერი პროდუქტისთვის)
-    public string? PackagingType { get; set; } // "Box", "Package", "Carton" და ა.შ.
+    public PackagingType? PackagingType { get; set; }
     public int? UnitsPerPackage { get; set; }
     public int? FullPackagesCount { get; set; }
     public int? PartialPackagesCount { get; set; }
@@ -72,7 +74,7 @@ public class UpdateWarehouseStockDto
     public DateTime? ExpirationDate { get; set; }
     
     // შეფუთვის დეტალები (optional)
-    public string? PackagingType { get; set; }
+    public PackagingType? PackagingType { get; set; }
     public int? UnitsPerPackage { get; set; }
     public int? FullPackagesCount { get; set; }
     public int? PartialPackagesCount { get; set; }

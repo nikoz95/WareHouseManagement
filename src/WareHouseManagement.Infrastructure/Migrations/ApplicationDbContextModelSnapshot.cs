@@ -161,16 +161,19 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("City")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("ContactPerson")
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -180,10 +183,12 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
                     b.Property<string>("LocationName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -192,7 +197,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyLocations");
+                    b.ToTable("CompanyLocations", (string)null);
                 });
 
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.CompanyProduct", b =>
@@ -202,7 +207,8 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("CommercialPrice")
-                        .HasColumnType("numeric");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
@@ -230,7 +236,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CompanyProducts");
+                    b.ToTable("CompanyProducts", (string)null);
                 });
 
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.Debtor", b =>
@@ -464,10 +470,8 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<string>("PackagingType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int>("PackagingType")
+                        .HasColumnType("integer");
 
                     b.Property<int>("PartialPackagesCount")
                         .ValueGeneratedOnAdd()
@@ -810,7 +814,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
                             Abbreviation = "ც",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა ცალების მიხედვით",
                             IsActive = true,
@@ -819,14 +823,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Piece",
                             NameKa = "ცალი",
                             UnitType = 0,
-                            UpdatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
                             Abbreviation = "ლ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 0.5m,
                             Description = "პროდუქტის მოცულობა ლიტრებში",
                             IsActive = true,
@@ -836,14 +840,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Liter",
                             NameKa = "ლიტრი",
                             UnitType = 1,
-                            UpdatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
                             Abbreviation = "მლ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 500m,
                             Description = "პროდუქტის მოცულობა მილილიტრებში",
                             IsActive = true,
@@ -853,14 +857,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Milliliter",
                             NameKa = "მილილიტრი",
                             UnitType = 2,
-                            UpdatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000004"),
                             Abbreviation = "კგ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 1m,
                             Description = "პროდუქტის წონა კილოგრამებში",
                             IsActive = true,
@@ -870,14 +874,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Kilogram",
                             NameKa = "კილოგრამი",
                             UnitType = 3,
-                            UpdatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
                             Abbreviation = "გ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 100m,
                             Description = "პროდუქტის წონა გრამებში",
                             IsActive = true,
@@ -887,14 +891,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Gram",
                             NameKa = "გრამი",
                             UnitType = 4,
-                            UpdatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
                             Abbreviation = "ყთ",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა ყუთების მიხედვით",
                             IsActive = true,
@@ -903,14 +907,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Box",
                             NameKa = "ყუთი",
                             UnitType = 5,
-                            UpdatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
                             Abbreviation = "პქ",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა პაკეტების მიხედვით",
                             IsActive = true,
@@ -919,7 +923,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Package",
                             NameKa = "პაკეტი",
                             UnitType = 6,
-                            UpdatedAt = new DateTime(2025, 12, 26, 0, 45, 13, 796, DateTimeKind.Utc).AddTicks(3281)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         });
                 });
 
@@ -1231,7 +1235,8 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
                     b.HasOne("WareHouseManagement.Domain.Entities.CompanyLocation", "CompanyLocation")
                         .WithMany()
-                        .HasForeignKey("CompanyLocationId");
+                        .HasForeignKey("CompanyLocationId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("WareHouseManagement.Domain.Entities.Product", "Product")
                         .WithMany("CompanyProducts")

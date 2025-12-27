@@ -1,4 +1,5 @@
 ﻿﻿﻿using WareHouseManagement.Domain.Common;
+using WareHouseManagement.Domain.Enums;
 
 namespace WareHouseManagement.Domain.Entities;
 
@@ -64,7 +65,7 @@ public class PackagingDetails : BaseEntity
     /// <summary>
     /// შეფუთვის ტიპი (ყუთი, პაკეტი, კოლოფი და ა.შ.)
     /// </summary>
-    public string PackagingType { get; set; } = "Box"; // "Box", "Package", "Carton", "Pallet" და ა.შ.
+    public PackagingType PackagingType { get; set; } = PackagingType.Box;
     
     /// <summary>
     /// ერთ შეფუთვაში რამდენი ერთეული ჯდება 

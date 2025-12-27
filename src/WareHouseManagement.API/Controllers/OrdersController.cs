@@ -1,4 +1,4 @@
-﻿﻿﻿using MediatR;
+﻿﻿﻿﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using WareHouseManagement.Application.Features.Orders.Commands;
 using WareHouseManagement.Application.Features.Orders.Queries;
@@ -75,6 +75,24 @@ public class OrdersController : ControllerBase
             return BadRequest(new { error = result.Message, errors = result.Errors });
 
         return CreatedAtAction(nameof(GetById), new { id = result.Data?.Id }, result.Data);
+    }
+
+    /// <summary>
+    /// Update order status and payment
+    /// </summary>
+    [HttpPut("{id}")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateOrderCommand command)
+    {
+        command.Id = id;
+        var result = await _mediator.Send(command);
+
+        if (!result.IsSuccess)
+            return BadRequest(new { error = result.Message, errors = result.Errors });
+
+        return Ok(result.Data);
     }
 }
 

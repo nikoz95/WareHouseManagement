@@ -380,35 +380,35 @@ public static class DatabaseSeeder
         {
             // განსაზღვრავთ ლოკაციას პროდუქტის ტიპის მიხედვით
             Guid locationId;
-            string packagingType;
+            PackagingType packagingType;
             int unitsPerPackage;
             decimal quantity;
             
             if (i < 5) // წითელი ღვინოები
             {
                 locationId = location2.Id; // B სექცია - წითელი ღვინოები
-                packagingType = "ყუთი 6 ბოთლი";
+                packagingType = PackagingType.Box;
                 unitsPerPackage = 6;
                 quantity = 120 + (i * 12); // ღვინოები
             }
             else if (i < 10) // თეთრი ღვინოები
             {
                 locationId = location1.Id; // A სექცია - თეთრი ღვინოები
-                packagingType = "ყუთი 12 ბოთლი";
+                packagingType = PackagingType.Box;
                 unitsPerPackage = 12;
                 quantity = 144 + (i * 12);
             }
             else if (i < 12) // სიდრი
             {
                 locationId = location4.Id; // D სექცია - სიდრი და ლუდი
-                packagingType = "პლასტიკური ყუთი 24 ბოთლი";
+                packagingType = PackagingType.Carton;
                 unitsPerPackage = 24;
                 quantity = 240 + (i * 24);
             }
             else // კეგები
             {
                 locationId = location5.Id; // E სექცია - კეგები
-                packagingType = i == 12 ? "50L კეგი" : "30L კეგი";
+                packagingType = PackagingType.Keg;
                 unitsPerPackage = 1; // კეგი არის ერთეული
                 quantity = 15 + (i * 2); // ნაკლები რაოდენობა
             }

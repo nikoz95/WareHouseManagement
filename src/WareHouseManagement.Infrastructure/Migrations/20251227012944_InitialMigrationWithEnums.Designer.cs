@@ -12,8 +12,8 @@ using WareHouseManagement.Infrastructure.Data;
 namespace WareHouseManagement.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251225204249_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20251227012944_InitialMigrationWithEnums")]
+    partial class InitialMigrationWithEnums
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,16 +164,19 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Address")
-                        .HasColumnType("text");
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
 
                     b.Property<string>("City")
-                        .HasColumnType("text");
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
 
                     b.Property<string>("ContactPerson")
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -183,10 +186,12 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
                     b.Property<string>("LocationName")
                         .IsRequired()
-                        .HasColumnType("text");
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
 
                     b.Property<string>("Phone")
-                        .HasColumnType("text");
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -195,7 +200,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("CompanyLocations");
+                    b.ToTable("CompanyLocations", (string)null);
                 });
 
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.CompanyProduct", b =>
@@ -205,7 +210,8 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<decimal>("CommercialPrice")
-                        .HasColumnType("numeric");
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)");
 
                     b.Property<Guid>("CompanyId")
                         .HasColumnType("uuid");
@@ -233,7 +239,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("CompanyProducts");
+                    b.ToTable("CompanyProducts", (string)null);
                 });
 
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.Debtor", b =>
@@ -467,10 +473,8 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("character varying(500)");
 
-                    b.Property<string>("PackagingType")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)");
+                    b.Property<int>("PackagingType")
+                        .HasColumnType("integer");
 
                     b.Property<int>("PartialPackagesCount")
                         .ValueGeneratedOnAdd()
@@ -497,6 +501,49 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         .IsUnique();
 
                     b.ToTable("PackagingDetails", (string)null);
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.Permission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("Resource")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Resource", "Action")
+                        .IsUnique();
+
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.Product", b =>
@@ -582,6 +629,126 @@ namespace WareHouseManagement.Infrastructure.Migrations
                     b.ToTable("ProductDetails", (string)null);
                 });
 
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IpAddress")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("ReplacedByToken")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("RevokedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("RevokedReason")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ExpiresAt");
+
+                    b.HasIndex("Token")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens", (string)null);
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.Role", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("Roles", (string)null);
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.RolePermission", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("PermissionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PermissionId");
+
+                    b.HasIndex("RoleId", "PermissionId")
+                        .IsUnique();
+
+                    b.ToTable("RolePermissions", (string)null);
+                });
+
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.UnitTypeRule", b =>
                 {
                     b.Property<Guid>("Id")
@@ -650,7 +817,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             Id = new Guid("10000000-0000-0000-0000-000000000001"),
                             Abbreviation = "ც",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა ცალების მიხედვით",
                             IsActive = true,
@@ -659,14 +826,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Piece",
                             NameKa = "ცალი",
                             UnitType = 0,
-                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000002"),
                             Abbreviation = "ლ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 0.5m,
                             Description = "პროდუქტის მოცულობა ლიტრებში",
                             IsActive = true,
@@ -676,14 +843,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Liter",
                             NameKa = "ლიტრი",
                             UnitType = 1,
-                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000003"),
                             Abbreviation = "მლ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 500m,
                             Description = "პროდუქტის მოცულობა მილილიტრებში",
                             IsActive = true,
@@ -693,14 +860,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Milliliter",
                             NameKa = "მილილიტრი",
                             UnitType = 2,
-                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000004"),
                             Abbreviation = "კგ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 1m,
                             Description = "პროდუქტის წონა კილოგრამებში",
                             IsActive = true,
@@ -710,14 +877,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Kilogram",
                             NameKa = "კილოგრამი",
                             UnitType = 3,
-                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000005"),
                             Abbreviation = "გ",
                             AllowOnlyWholeNumbers = false,
-                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 100m,
                             Description = "პროდუქტის წონა გრამებში",
                             IsActive = true,
@@ -727,14 +894,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Gram",
                             NameKa = "გრამი",
                             UnitType = 4,
-                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000006"),
                             Abbreviation = "ყთ",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა ყუთების მიხედვით",
                             IsActive = true,
@@ -743,14 +910,14 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Box",
                             NameKa = "ყუთი",
                             UnitType = 5,
-                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         },
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000007"),
                             Abbreviation = "პქ",
                             AllowOnlyWholeNumbers = true,
-                            CreatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118),
+                            CreatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300),
                             DefaultValue = 1m,
                             Description = "პროდუქტის რაოდენობა პაკეტების მიხედვით",
                             IsActive = true,
@@ -759,8 +926,98 @@ namespace WareHouseManagement.Infrastructure.Migrations
                             NameEn = "Package",
                             NameKa = "პაკეტი",
                             UnitType = 6,
-                            UpdatedAt = new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118)
+                            UpdatedAt = new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300)
                         });
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime?>("LastLoginAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Users", (string)null);
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.UserRole", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("UserId", "RoleId")
+                        .IsUnique();
+
+                    b.ToTable("UserRoles", (string)null);
                 });
 
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.Warehouse", b =>
@@ -981,7 +1238,8 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
                     b.HasOne("WareHouseManagement.Domain.Entities.CompanyLocation", "CompanyLocation")
                         .WithMany()
-                        .HasForeignKey("CompanyLocationId");
+                        .HasForeignKey("CompanyLocationId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("WareHouseManagement.Domain.Entities.Product", "Product")
                         .WithMany("CompanyProducts")
@@ -1068,6 +1326,55 @@ namespace WareHouseManagement.Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.RefreshToken", b =>
+                {
+                    b.HasOne("WareHouseManagement.Domain.Entities.User", "User")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.RolePermission", b =>
+                {
+                    b.HasOne("WareHouseManagement.Domain.Entities.Permission", "Permission")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WareHouseManagement.Domain.Entities.Role", "Role")
+                        .WithMany("RolePermissions")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Permission");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.UserRole", b =>
+                {
+                    b.HasOne("WareHouseManagement.Domain.Entities.Role", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WareHouseManagement.Domain.Entities.User", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.WarehouseLocation", b =>
                 {
                     b.HasOne("WareHouseManagement.Domain.Entities.Warehouse", "Warehouse")
@@ -1142,6 +1449,11 @@ namespace WareHouseManagement.Infrastructure.Migrations
                     b.Navigation("OrderItems");
                 });
 
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.Permission", b =>
+                {
+                    b.Navigation("RolePermissions");
+                });
+
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.Product", b =>
                 {
                     b.Navigation("CompanyProducts");
@@ -1156,6 +1468,20 @@ namespace WareHouseManagement.Infrastructure.Migrations
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.ProductDetails", b =>
                 {
                     b.Navigation("AlcoholicDetails");
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.Role", b =>
+                {
+                    b.Navigation("RolePermissions");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("WareHouseManagement.Domain.Entities.User", b =>
+                {
+                    b.Navigation("RefreshTokens");
+
+                    b.Navigation("UserRoles");
                 });
 
             modelBuilder.Entity("WareHouseManagement.Domain.Entities.Warehouse", b =>

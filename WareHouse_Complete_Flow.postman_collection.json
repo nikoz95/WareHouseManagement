@@ -1,0 +1,550 @@
+{
+	"info": {
+		"name": "WareHouse Management - Complete Flow",
+		"description": "სრული ფლოუ: პროდუქტის დამატება → საწყობში ჩამატება → 2 შეკვეთა",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:5000",
+			"type": "string"
+		},
+		{
+			"key": "token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "productId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "warehouseLocationId",
+			"value": "312b4a69-fa8b-4ea1-bcd4-12cf3af764f9",
+			"type": "string",
+			"description": "Location A from seed data"
+		},
+		{
+			"key": "manufacturerId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "companyId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "order1Id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "order2Id",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    if (response.data && response.data.accessToken) {",
+							"        pm.collectionVariables.set('token', response.data.accessToken);",
+							"        console.log('Token saved:', response.data.accessToken);",
+							"    } else {",
+							"        console.error('Login failed or no token received:', response);",
+							"    }",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin123!\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/auth/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "auth", "login"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Get Manufacturers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    console.log('Manufacturers response:', JSON.stringify(response, null, 2));",
+							"    ",
+							"    let manufacturers = response.data || response;",
+							"    ",
+							"    if (Array.isArray(manufacturers) && manufacturers.length > 0) {",
+							"        pm.collectionVariables.set('manufacturerId', manufacturers[0].id);",
+							"        console.log('Manufacturer ID saved:', manufacturers[0].id);",
+							"    } else {",
+							"        console.error('No manufacturers found in response');",
+							"    }",
+							"} else {",
+							"    console.error('Get manufacturers failed with status:', pm.response.code);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/manufacturers",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "manufacturers"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Get Companies",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    console.log('Companies response:', JSON.stringify(response, null, 2));",
+							"    ",
+							"    let companies = response.data || response;",
+							"    ",
+							"    if (Array.isArray(companies) && companies.length > 0) {",
+							"        pm.collectionVariables.set('companyId', companies[0].id);",
+							"        console.log('Company ID saved:', companies[0].id);",
+							"    } else {",
+							"        console.error('No companies found in response');",
+							"    }",
+							"} else {",
+							"    console.error('Get companies failed with status:', pm.response.code);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/companies",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "companies"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Create New Product",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const response = pm.response.json();",
+							"    console.log('Full response:', JSON.stringify(response, null, 2));",
+							"    ",
+							"    // Try different response structures",
+							"    let productId = null;",
+							"    ",
+							"    if (response.data && response.data.id) {",
+							"        productId = response.data.id;",
+							"    } else if (response.id) {",
+							"        productId = response.id;",
+							"    }",
+							"    ",
+							"    if (productId) {",
+							"        pm.collectionVariables.set('productId', productId);",
+							"        console.log('Product ID saved:', productId);",
+							"    } else {",
+							"        console.error('Could not find product ID in response');",
+							"    }",
+							"} else {",
+							"    console.error('Product creation failed with status:', pm.response.code);",
+							"    console.error('Response:', pm.response.text());",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Test Product - Chateau Margaux 2015\",\n  \"description\": \"Premium French Wine for Testing\",\n  \"barcode\": \"TEST-{{$timestamp}}\",\n  \"price\": 250.00,\n  \"unitTypeRuleId\": \"10000000-0000-0000-0000-000000000002\",\n  \"productType\": \"Wine\",\n  \"countryOfOrigin\": \"საფრანგეთი\",\n  \"shelfLifeMonths\": 120,\n  \"isAlcoholic\": true,\n  \"alcoholPercentage\": 13.5,\n  \"region\": \"Bordeaux\",\n  \"servingTemperature\": 16.5,\n  \"qualityClass\": \"Premier Cru\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/products",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "products"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Add Product to Warehouse Stock",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const response = pm.response.json();",
+							"    console.log('Stock created:', JSON.stringify(response, null, 2));",
+							"} else {",
+							"    console.error('Stock creation failed with status:', pm.response.code);",
+							"    console.error('Response:', pm.response.text());",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"warehouseLocationId\": \"{{warehouseLocationId}}\",\n  \"productId\": \"{{productId}}\",\n  \"manufacturerId\": \"{{manufacturerId}}\",\n  \"quantity\": 144,\n  \"purchasePrice\": 175.00,\n  \"expirationDate\": \"2027-12-31T00:00:00Z\",\n  \"packagingType\": 0,\n  \"unitsPerPackage\": 12,\n  \"fullPackagesCount\": 12,\n  \"partialPackagesCount\": 0,\n  \"unitsInPartialPackages\": 0,\n  \"packagingNotes\": \"ყუთი 12 ბოთლი\",\n  \"batchNumber\": \"BATCH-2024-001\",\n  \"exciseStampNumber\": \"EXC-2024-12345\",\n  \"certificateNumber\": \"CERT-FR-2024-789\",\n  \"storageTemperature\": 14.5\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/warehouse-stocks",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "warehouse-stocks"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Create Order (With Company)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const response = pm.response.json();",
+							"    console.log('Order 1 response:', JSON.stringify(response, null, 2));",
+							"    ",
+							"    let orderId = null;",
+							"    if (response.data && response.data.id) {",
+							"        orderId = response.data.id;",
+							"    } else if (response.id) {",
+							"        orderId = response.id;",
+							"    }",
+							"    ",
+							"    if (orderId) {",
+							"        pm.collectionVariables.set('order1Id', orderId);",
+							"        console.log('Order 1 ID saved:', orderId);",
+							"    } else {",
+							"        console.error('Could not find order ID in response');",
+							"    }",
+							"} else {",
+							"    console.error('Order creation failed with status:', pm.response.code);",
+							"    console.error('Response:', pm.response.text());",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"companyId\": \"{{companyId}}\",\n  \"customerName\": \"ООО Test Company\",\n  \"customerPhone\": \"+995555123456\",\n  \"customerEmail\": \"company@test.ge\",\n  \"orderDate\": \"{{$isoTimestamp}}\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 24,\n      \"unitPrice\": 250.00\n    }\n  ],\n  \"notes\": \"შეკვეთა კომპანიაზე - Test\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/orders",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "orders"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Create Order (Without Company)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 201) {",
+							"    const response = pm.response.json();",
+							"    console.log('Order 2 response:', JSON.stringify(response, null, 2));",
+							"    ",
+							"    let orderId = null;",
+							"    if (response.data && response.data.id) {",
+							"        orderId = response.data.id;",
+							"    } else if (response.id) {",
+							"        orderId = response.id;",
+							"    }",
+							"    ",
+							"    if (orderId) {",
+							"        pm.collectionVariables.set('order2Id', orderId);",
+							"        console.log('Order 2 ID saved:', orderId);",
+							"    } else {",
+							"        console.error('Could not find order ID in response');",
+							"    }",
+							"} else {",
+							"    console.error('Order creation failed with status:', pm.response.code);",
+							"    console.error('Response:', pm.response.text());",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"customerName\": \"გიორგი მელიქიძე\",\n  \"customerPhone\": \"+995555987654\",\n  \"customerEmail\": \"giorgi@personal.ge\",\n  \"orderDate\": \"{{$isoTimestamp}}\",\n  \"items\": [\n    {\n      \"productId\": \"{{productId}}\",\n      \"quantity\": 12,\n      \"unitPrice\": 250.00\n    }\n  ],\n  \"notes\": \"შეკვეთა ფიზიკურ პირზე - Test\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/orders",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "orders"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8. Update Order 1 - Mark as Paid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    console.log('Order 1 updated:', JSON.stringify(response, null, 2));",
+							"} else {",
+							"    console.error('Order update failed with status:', pm.response.code);",
+							"    console.error('Response:', pm.response.text());",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"status\": 2,\n  \"paymentStatus\": 2,\n  \"paidAmount\": 6000.00,\n  \"notes\": \"სრულად გადახდილი - საბანკო გადარიცხვით\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/orders/{{order1Id}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "orders", "{{order1Id}}"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "9. Update Order 2 - Partial Payment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"if (pm.response.code === 200) {",
+							"    const response = pm.response.json();",
+							"    console.log('Order 2 updated:', JSON.stringify(response, null, 2));",
+							"} else {",
+							"    console.error('Order update failed with status:', pm.response.code);",
+							"    console.error('Response:', pm.response.text());",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"status\": 1,\n  \"paidAmount\": 1500.00,\n  \"notes\": \"ნაწილობრივი გადახდა - ნაღდი ანგარიშსწორება\"\n}"
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/orders/{{order2Id}}",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "orders", "{{order2Id}}"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10. Get All Orders",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/orders",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "orders"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "11. Get Warehouse Stock",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/warehouse-stocks?productId={{productId}}&includePackagingDetails=true&includeAlcoholicDetails=true",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "warehouse-stocks"],
+					"query": [
+						{
+							"key": "productId",
+							"value": "{{productId}}"
+						},
+						{
+							"key": "includePackagingDetails",
+							"value": "true"
+						},
+						{
+							"key": "includeAlcoholicDetails",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "12. Get Debtors",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/api/debtors",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "debtors"]
+				}
+			},
+			"response": []
+		}
+	]
+}
+

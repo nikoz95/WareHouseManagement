@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Domain.Interfaces;
 using WareHouseManagement.Infrastructure.Data;
@@ -25,6 +25,14 @@ public class DebtorRepository : GenericRepository<Debtor>, IDebtorRepository
         return await _dbSet
             .Include(d => d.Company)
             .FirstOrDefaultAsync(d => d.CompanyId == companyId);
+    }
+
+    public async Task<IEnumerable<Debtor>> GetDebtorsByCompanyAsync(Guid companyId)
+    {
+        return await _dbSet
+            .Include(d => d.Company)
+            .Where(d => d.CompanyId == companyId)
+            .ToListAsync();
     }
 
     public async Task<decimal> GetTotalOutstandingDebtAsync()

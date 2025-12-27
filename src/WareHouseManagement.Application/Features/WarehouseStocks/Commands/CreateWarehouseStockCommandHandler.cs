@@ -46,7 +46,7 @@ public class CreateWarehouseStockCommandHandler(IUnitOfWork unitOfWork, Applicat
                 ProductId = request.ProductId,
                 ManufacturerId = request.ManufacturerId,
                 Quantity = request.Quantity,
-                PurchasePrice = request.PurchasePrice,
+                PurchasePrice = request.PurchasePrice ?? 0, // default 0 if not provided
                 ExpirationDate = request.ExpirationDate,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
@@ -61,7 +61,7 @@ public class CreateWarehouseStockCommandHandler(IUnitOfWork unitOfWork, Applicat
                 {
                     Id = Guid.NewGuid(),
                     WarehouseStockId = warehouseStock.Id,
-                    PackagingType = request.PackagingType ?? "Box",
+                    PackagingType = request.PackagingType ?? Domain.Enums.PackagingType.Box,
                     UnitsPerPackage = request.UnitsPerPackage.Value,
                     FullPackagesCount = request.FullPackagesCount ?? 0,
                     PartialPackagesCount = request.PartialPackagesCount ?? 0,

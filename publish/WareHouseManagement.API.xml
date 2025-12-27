@@ -129,6 +129,11 @@
             Create a new order
             </summary>
         </member>
+        <member name="M:WareHouseManagement.API.Controllers.OrdersController.Update(System.Guid,WareHouseManagement.Application.Features.Orders.Commands.UpdateOrderCommand)">
+            <summary>
+            Update order status and payment
+            </summary>
+        </member>
         <member name="M:WareHouseManagement.API.Controllers.ProductsController.GetAll">
             <summary>
             Get all products

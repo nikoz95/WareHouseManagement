@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace WareHouseManagement.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class InitialMigrationWithEnums : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,6 +56,40 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Permissions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Resource = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Action = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Permissions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Name = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Description = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UnitTypeRules",
                 columns: table => new
                 {
@@ -77,6 +111,27 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_UnitTypeRules", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Username = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    Email = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    PasswordHash = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    FirstName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    LastName = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: false),
+                    IsActive = table.Column<bool>(type: "boolean", nullable: false, defaultValue: true),
+                    LastLoginAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -104,11 +159,11 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
-                    LocationName = table.Column<string>(type: "text", nullable: false),
-                    Address = table.Column<string>(type: "text", nullable: true),
-                    City = table.Column<string>(type: "text", nullable: true),
-                    Phone = table.Column<string>(type: "text", nullable: true),
-                    ContactPerson = table.Column<string>(type: "text", nullable: true),
+                    LocationName = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: false),
+                    Address = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    City = table.Column<string>(type: "character varying(100)", maxLength: 100, nullable: true),
+                    Phone = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    ContactPerson = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -187,6 +242,34 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "RolePermissions",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    PermissionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RolePermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
@@ -209,6 +292,62 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         principalTable: "UnitTypeRules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Token = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "boolean", nullable: false),
+                    RevokedReason = table.Column<string>(type: "character varying(200)", maxLength: 200, nullable: true),
+                    RevokedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    ReplacedByToken = table.Column<string>(type: "character varying(500)", maxLength: 500, nullable: true),
+                    IpAddress = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserRoles",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UserId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RoleId = table.Column<Guid>(type: "uuid", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserRoles_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -242,7 +381,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
                     CompanyId = table.Column<Guid>(type: "uuid", nullable: false),
                     ProductId = table.Column<Guid>(type: "uuid", nullable: false),
                     CompanyLocationId = table.Column<Guid>(type: "uuid", nullable: true),
-                    CommercialPrice = table.Column<decimal>(type: "numeric", nullable: false),
+                    CommercialPrice = table.Column<decimal>(type: "numeric(18,2)", precision: 18, scale: 2, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     IsDeleted = table.Column<bool>(type: "boolean", nullable: false)
@@ -260,7 +399,8 @@ namespace WareHouseManagement.Infrastructure.Migrations
                         name: "FK_CompanyProducts_CompanyLocations_CompanyLocationId",
                         column: x => x.CompanyLocationId,
                         principalTable: "CompanyLocations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_CompanyProducts_Products_ProductId",
                         column: x => x.ProductId,
@@ -419,7 +559,7 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     WarehouseStockId = table.Column<Guid>(type: "uuid", nullable: false),
-                    PackagingType = table.Column<string>(type: "character varying(50)", maxLength: 50, nullable: false),
+                    PackagingType = table.Column<int>(type: "integer", nullable: false),
                     UnitsPerPackage = table.Column<int>(type: "integer", nullable: false),
                     FullPackagesCount = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
                     PartialPackagesCount = table.Column<int>(type: "integer", nullable: false, defaultValue: 0),
@@ -480,13 +620,13 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 columns: new[] { "Id", "Abbreviation", "AllowOnlyWholeNumbers", "CreatedAt", "DefaultValue", "Description", "IsActive", "IsDeleted", "MaxValue", "MinValue", "NameEn", "NameKa", "UnitType", "UpdatedAt" },
                 values: new object[,]
                 {
-                    { new Guid("10000000-0000-0000-0000-000000000001"), "ც", true, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118), 1m, "პროდუქტის რაოდენობა ცალების მიხედვით", true, false, null, 1m, "Piece", "ცალი", 0, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118) },
-                    { new Guid("10000000-0000-0000-0000-000000000002"), "ლ", false, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118), 0.5m, "პროდუქტის მოცულობა ლიტრებში", true, false, 1000m, 0.001m, "Liter", "ლიტრი", 1, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118) },
-                    { new Guid("10000000-0000-0000-0000-000000000003"), "მლ", false, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118), 500m, "პროდუქტის მოცულობა მილილიტრებში", true, false, 10000m, 1m, "Milliliter", "მილილიტრი", 2, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118) },
-                    { new Guid("10000000-0000-0000-0000-000000000004"), "კგ", false, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118), 1m, "პროდუქტის წონა კილოგრამებში", true, false, 1000m, 0.001m, "Kilogram", "კილოგრამი", 3, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118) },
-                    { new Guid("10000000-0000-0000-0000-000000000005"), "გ", false, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118), 100m, "პროდუქტის წონა გრამებში", true, false, 100000m, 1m, "Gram", "გრამი", 4, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118) },
-                    { new Guid("10000000-0000-0000-0000-000000000006"), "ყთ", true, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118), 1m, "პროდუქტის რაოდენობა ყუთების მიხედვით", true, false, null, 1m, "Box", "ყუთი", 5, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118) },
-                    { new Guid("10000000-0000-0000-0000-000000000007"), "პქ", true, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118), 1m, "პროდუქტის რაოდენობა პაკეტების მიხედვით", true, false, null, 1m, "Package", "პაკეტი", 6, new DateTime(2025, 12, 25, 20, 42, 48, 891, DateTimeKind.Utc).AddTicks(4118) }
+                    { new Guid("10000000-0000-0000-0000-000000000001"), "ც", true, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300), 1m, "პროდუქტის რაოდენობა ცალების მიხედვით", true, false, null, 1m, "Piece", "ცალი", 0, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300) },
+                    { new Guid("10000000-0000-0000-0000-000000000002"), "ლ", false, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300), 0.5m, "პროდუქტის მოცულობა ლიტრებში", true, false, 1000m, 0.001m, "Liter", "ლიტრი", 1, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300) },
+                    { new Guid("10000000-0000-0000-0000-000000000003"), "მლ", false, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300), 500m, "პროდუქტის მოცულობა მილილიტრებში", true, false, 10000m, 1m, "Milliliter", "მილილიტრი", 2, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300) },
+                    { new Guid("10000000-0000-0000-0000-000000000004"), "კგ", false, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300), 1m, "პროდუქტის წონა კილოგრამებში", true, false, 1000m, 0.001m, "Kilogram", "კილოგრამი", 3, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300) },
+                    { new Guid("10000000-0000-0000-0000-000000000005"), "გ", false, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300), 100m, "პროდუქტის წონა გრამებში", true, false, 100000m, 1m, "Gram", "გრამი", 4, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300) },
+                    { new Guid("10000000-0000-0000-0000-000000000006"), "ყთ", true, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300), 1m, "პროდუქტის რაოდენობა ყუთების მიხედვით", true, false, null, 1m, "Box", "ყუთი", 5, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300) },
+                    { new Guid("10000000-0000-0000-0000-000000000007"), "პქ", true, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300), 1m, "პროდუქტის რაოდენობა პაკეტების მიხედვით", true, false, null, 1m, "Package", "პაკეტი", 6, new DateTime(2025, 12, 27, 1, 29, 44, 110, DateTimeKind.Utc).AddTicks(5300) }
                 });
 
             migrationBuilder.CreateIndex(
@@ -548,6 +688,12 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Permissions_Resource_Action",
+                table: "Permissions",
+                columns: new[] { "Resource", "Action" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductDetails_ProductId",
                 table: "ProductDetails",
                 column: "ProductId",
@@ -559,9 +705,65 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 column: "UnitTypeRuleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_ExpiresAt",
+                table: "RefreshTokens",
+                column: "ExpiresAt");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_Token",
+                table: "RefreshTokens",
+                column: "Token",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_PermissionId",
+                table: "RolePermissions",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RolePermissions_RoleId_PermissionId",
+                table: "RolePermissions",
+                columns: new[] { "RoleId", "PermissionId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roles_Name",
+                table: "Roles",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_UnitTypeRules_UnitType",
                 table: "UnitTypeRules",
                 column: "UnitType",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_RoleId",
+                table: "UserRoles",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_UserId_RoleId",
+                table: "UserRoles",
+                columns: new[] { "UserId", "RoleId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Email",
+                table: "Users",
+                column: "Email",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -627,6 +829,15 @@ namespace WareHouseManagement.Infrastructure.Migrations
                 name: "PackagingDetails");
 
             migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "RolePermissions");
+
+            migrationBuilder.DropTable(
+                name: "UserRoles");
+
+            migrationBuilder.DropTable(
                 name: "WarehouseStockHistories");
 
             migrationBuilder.DropTable(
@@ -634,6 +845,15 @@ namespace WareHouseManagement.Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "CompanyLocations");
+
+            migrationBuilder.DropTable(
+                name: "Permissions");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Orders");

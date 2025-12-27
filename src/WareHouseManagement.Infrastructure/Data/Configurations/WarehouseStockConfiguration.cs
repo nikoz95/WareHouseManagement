@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.EntityFrameworkCore;
+﻿﻿﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using WareHouseManagement.Domain.Entities;
 
@@ -70,7 +70,7 @@ public class PackagingDetailsConfiguration : IEntityTypeConfiguration<PackagingD
             .IsUnique();
 
         builder.Property(p => p.PackagingType)
-            .HasMaxLength(50)
+            .HasConversion<int>()
             .IsRequired();
 
         builder.Property(p => p.UnitsPerPackage)
