@@ -4,6 +4,31 @@
         <name>WareHouseManagement.API</name>
     </assembly>
     <members>
+        <member name="M:WareHouseManagement.API.Controllers.AuthController.Login(WareHouseManagement.Application.DTOs.LoginRequest)">
+            <summary>
+            Login - ავტორიზაცია
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.AuthController.RefreshToken(WareHouseManagement.Application.DTOs.RefreshTokenRequest)">
+            <summary>
+            Refresh Token - ტოკენის განახლება
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.AuthController.TestAdmin">
+            <summary>
+            Test endpoint - Admin უფლების შემოწმება
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.AuthController.TestGuest">
+            <summary>
+            Test endpoint - Guest უფლების შემოწმება
+            </summary>
+        </member>
+        <member name="M:WareHouseManagement.API.Controllers.AuthController.TestPermission">
+            <summary>
+            Test endpoint - Permission-ის შემოწმება
+            </summary>
+        </member>
         <member name="M:WareHouseManagement.API.Controllers.CompaniesController.GetAll">
             <summary>
             Get all companies

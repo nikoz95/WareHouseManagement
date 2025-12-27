@@ -9,7 +9,7 @@ public interface IWarehouseRepository : IGenericRepository<Warehouse>
     Task<IEnumerable<WarehouseStock>> GetStockByWarehouseLocationAsync(Guid warehouseLocationId);
     Task<WarehouseStock?> GetStockByProductAndLocationAsync(Guid productId, Guid warehouseLocationId);
     Task<WarehouseLocation?> GetLocationByIdAsync(Guid locationId);
-    Task<List<WarehouseStock>> GetAllStocksAsync();
+    Task<List<WarehouseStock>> GetAllStocksAsync(bool includePackaging = true, bool includeAlcoholic = true);
     Task<WarehouseStock?> GetStockByIdAsync(Guid stockId);
     Task AddStockAsync(WarehouseStock stock);
 }

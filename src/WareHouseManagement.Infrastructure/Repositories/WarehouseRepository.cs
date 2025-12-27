@@ -1,4 +1,4 @@
-﻿﻿using Microsoft.EntityFrameworkCore;
+﻿﻿﻿using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Domain.Interfaces;
 using WareHouseManagement.Infrastructure.Data;
@@ -9,6 +9,23 @@ public class WarehouseRepository : GenericRepository<Warehouse>, IWarehouseRepos
 {
     public WarehouseRepository(ApplicationDbContext context) : base(context)
     {
+    }
+
+    // Override GetByIdAsync to include WarehouseLocations
+    public new async Task<Warehouse?> GetByIdAsync(Guid id)
+    {
+        return await _dbSet
+            .Include(w => w.WarehouseLocations)
+            .FirstOrDefaultAsync(w => w.Id == id && !w.IsDeleted);
+    }
+
+    // Override GetAllAsync to include WarehouseLocations
+    public new async Task<IEnumerable<Warehouse>> GetAllAsync()
+    {
+        return await _dbSet
+            .Include(w => w.WarehouseLocations)
+            .Where(w => !w.IsDeleted)
+            .ToListAsync();
     }
 
     public async Task<Warehouse?> GetWarehouseWithStockAsync(Guid id)
@@ -55,14 +72,29 @@ public class WarehouseRepository : GenericRepository<Warehouse>, IWarehouseRepos
             .FirstOrDefaultAsync(wl => wl.Id == locationId && !wl.IsDeleted);
     }
 
-    public async Task<List<WarehouseStock>> GetAllStocksAsync()
+    public async Task<List<WarehouseStock>> GetAllStocksAsync(bool includePackaging = true, bool includeAlcoholic = true)
     {
-        return await _context.WarehouseStocks
+        var query = _context.WarehouseStocks
             .Include(ws => ws.WarehouseLocation)
                 .ThenInclude(wl => wl.Warehouse)
             .Include(ws => ws.Product)
                 .ThenInclude(p => p.UnitTypeRule)
             .Include(ws => ws.Manufacturer)
+            .AsQueryable();
+
+        // კონდიციურად ვატვირთავთ PackagingDetails-ს
+        if (includePackaging)
+        {
+            query = query.Include(ws => ws.PackagingDetails);
+        }
+
+        // კონდიციურად ვატვირთავთ AlcoholicDetails-ს
+        if (includeAlcoholic)
+        {
+            query = query.Include(ws => ws.AlcoholicDetails);
+        }
+
+        return await query
             .Where(ws => !ws.IsDeleted)
             .ToListAsync();
     }

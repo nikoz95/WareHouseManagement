@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Domain.Enums;
-using WareHouseManagement.Infrastructure.Data;
 
 namespace WareHouseManagement.Infrastructure.Data.Seed;
 
@@ -119,6 +118,10 @@ public static class DatabaseSeeder
         {
             Id = Guid.NewGuid(),
             Name = "ცენტრალური საწყობი",
+            Address = "თბილისი, დიღომი, ქარვასლას 15",
+            City = "თბილისი",
+            Phone = "+995-555-100-200",
+            Description = "მთავარი საწყობი - ცენტრალური განაწილების პუნქტი",
             CreatedAt = DateTime.UtcNow
         };
 
@@ -126,16 +129,20 @@ public static class DatabaseSeeder
         {
             Id = Guid.NewGuid(),
             Name = "რეგიონალური საწყობი - კახეთი",
+            Address = "გურჯაანი, ღვინის ქუჩა 12",
+            City = "გურჯაანი",
+            Phone = "+995-555-300-400",
+            Description = "კახეთის რეგიონული საწყობი - ადგილობრივი მწარმოებლებისთვის",
             CreatedAt = DateTime.UtcNow
         };
 
         await context.Warehouses.AddRangeAsync(new[] { warehouse1, warehouse2 });
         await context.SaveChangesAsync();
 
-        // 4. საწყობის ლოკაციები
+        // 4. საწყობის ლოკაციები (ფიქსირებული ID-ები API ტესტირებისთვის)
         var location1 = new WarehouseLocation
         {
-            Id = Guid.Parse("312b4a69-fa8b-4ea1-bcd4-12cf3af764f9"), // ფიქსირებული ID თქვენი მოთხოვნისთვის
+            Id = Guid.Parse("312b4a69-fa8b-4ea1-bcd4-12cf3af764f9"), // A სექცია - თეთრი ღვინოები
             WarehouseId = warehouse1.Id,
             LocationName = "A სექცია - თეთრი ღვინოები",
             Description = "ცენტრალური საწყობი, პირველი სართული",
@@ -144,7 +151,7 @@ public static class DatabaseSeeder
 
         var location2 = new WarehouseLocation
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("227062d7-5ee9-4b05-8bfb-42aa85195729"), // B სექცია - წითელი ღვინოები
             WarehouseId = warehouse1.Id,
             LocationName = "B სექცია - წითელი ღვინოები",
             Description = "ცენტრალური საწყობი, მეორე სართული",
@@ -153,7 +160,7 @@ public static class DatabaseSeeder
 
         var location3 = new WarehouseLocation
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("a3f8c9d1-2b4e-4f5a-9c7d-1e8f3a6b5c4d"), // C სექცია - პრემიუმ
             WarehouseId = warehouse2.Id,
             LocationName = "C სექცია - პრემიუმ",
             Description = "კახეთის საწყობი, სპეციალური სექცია",
@@ -162,7 +169,7 @@ public static class DatabaseSeeder
 
         var location4 = new WarehouseLocation
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("b5e7d3f2-4c6a-4d8b-a1e9-2f7c8d9a3b1c"), // D სექცია - სიდრი და ლუდი
             WarehouseId = warehouse1.Id,
             LocationName = "D სექცია - სიდრი და ლუდი",
             Description = "ცენტრალური საწყობი, გაცივებული სექცია",
@@ -171,7 +178,7 @@ public static class DatabaseSeeder
 
         var location5 = new WarehouseLocation
         {
-            Id = Guid.NewGuid(),
+            Id = Guid.Parse("c7d9e4a3-5b8c-4e1d-b2f6-3a9d7c8e5b2a"), // E სექცია - კეგები
             WarehouseId = warehouse2.Id,
             LocationName = "E სექცია - კეგები",
             Description = "კახეთის საწყობი, კეგების საცავი",
@@ -353,7 +360,7 @@ public static class DatabaseSeeder
                 Id = Guid.NewGuid(),
                 ProductDetailsId = productDetails.Id,
                 AlcoholPercentage = i >= 12 ? 4.5m + (i * 0.2m) : i >= 10 ? 5.5m + (i * 0.3m) : 11.5m + (i * 0.5m), // ლუდი/სიდრი უფრო დაბალი %
-                Region = i >= 12 ? "თბილისი" : i >= 10 ? "კახეთი" : "კახეთი",
+                Region = i >= 12 ? "თბილისი" : "კახეთი",
                 ServingTemperature = i >= 10 ? 4.0m : (i < 5 ? 16.0m : 10.0m), // სიდრი და ლუდი ცივი
                 QualityClass = i < 3 ? "პრემიუმ" : i >= 12 ? "Craft Beer" : "სტანდარტი",
                 CreatedAt = DateTime.UtcNow
@@ -371,7 +378,41 @@ public static class DatabaseSeeder
         var stocks = new List<WarehouseStock>();
         for (int i = 0; i < products.Count; i++)
         {
-            var locationId = i < 5 ? location2.Id : (i < 8 ? location1.Id : location3.Id);
+            // განსაზღვრავთ ლოკაციას პროდუქტის ტიპის მიხედვით
+            Guid locationId;
+            string packagingType;
+            int unitsPerPackage;
+            decimal quantity;
+            
+            if (i < 5) // წითელი ღვინოები
+            {
+                locationId = location2.Id; // B სექცია - წითელი ღვინოები
+                packagingType = "ყუთი 6 ბოთლი";
+                unitsPerPackage = 6;
+                quantity = 120 + (i * 12); // ღვინოები
+            }
+            else if (i < 10) // თეთრი ღვინოები
+            {
+                locationId = location1.Id; // A სექცია - თეთრი ღვინოები
+                packagingType = "ყუთი 12 ბოთლი";
+                unitsPerPackage = 12;
+                quantity = 144 + (i * 12);
+            }
+            else if (i < 12) // სიდრი
+            {
+                locationId = location4.Id; // D სექცია - სიდრი და ლუდი
+                packagingType = "პლასტიკური ყუთი 24 ბოთლი";
+                unitsPerPackage = 24;
+                quantity = 240 + (i * 24);
+            }
+            else // კეგები
+            {
+                locationId = location5.Id; // E სექცია - კეგები
+                packagingType = i == 12 ? "50L კეგი" : "30L კეგი";
+                unitsPerPackage = 1; // კეგი არის ერთეული
+                quantity = 15 + (i * 2); // ნაკლები რაოდენობა
+            }
+            
             var manufacturerId = i % 2 == 0 ? manufacturers[0].Id : manufacturers[1].Id;
 
             var stock = new WarehouseStock
@@ -380,24 +421,28 @@ public static class DatabaseSeeder
                 WarehouseLocationId = locationId,
                 ProductId = products[i].Id,
                 ManufacturerId = manufacturerId,
-                Quantity = 100 + (i * 10),
+                Quantity = quantity,
                 PurchasePrice = products[i].Price * 0.7m,
-                ExpirationDate = DateTime.UtcNow.AddYears(2),
+                ExpirationDate = i >= 12 ? DateTime.UtcNow.AddMonths(6) : DateTime.UtcNow.AddYears(2),
                 CreatedAt = DateTime.UtcNow
             };
 
             stocks.Add(stock);
 
-            // შეფუთვის დეტალები
+            // შეფუთვის დეტალები - სრული და ნაწილობრივი შეფუთვები
+            int fullPackages = (int)(quantity / unitsPerPackage);
+            int remainingUnits = (int)(quantity % unitsPerPackage);
+            int partialPackages = remainingUnits > 0 ? 1 : 0;
+            
             var packaging = new PackagingDetails
             {
                 Id = Guid.NewGuid(),
                 WarehouseStockId = stock.Id,
-                PackagingType = "Box",
-                UnitsPerPackage = 6,
-                FullPackagesCount = (int)(stock.Quantity / 6),
-                PartialPackagesCount = (int)(stock.Quantity % 6) > 0 ? 1 : 0,
-                UnitsInPartialPackages = (int)(stock.Quantity % 6),
+                PackagingType = packagingType,
+                UnitsPerPackage = unitsPerPackage,
+                FullPackagesCount = fullPackages,
+                PartialPackagesCount = partialPackages,
+                UnitsInPartialPackages = remainingUnits,
                 CreatedAt = DateTime.UtcNow
             };
 

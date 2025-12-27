@@ -13,9 +13,11 @@ public class GetAllWarehouseStocksQueryHandler(IUnitOfWork unitOfWork, Applicati
     {
         try
         {
-          
-            // For now, get all stocks
-            var stocks = await unitOfWork.Warehouses.GetAllStocksAsync();
+            // ბაზიდან ვიტვირთავთ მხოლოდ საჭირო დატას
+            var stocks = await unitOfWork.Warehouses.GetAllStocksAsync(
+                includePackaging: request.IncludePackagingDetails,
+                includeAlcoholic: request.IncludeAlcoholicDetails
+            );
 
             // თუ გვინდა მხოლოდ კონკრეტული ლოკაციის stock-ები
             if (request.WarehouseLocationId.HasValue)

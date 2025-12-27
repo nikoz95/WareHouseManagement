@@ -1,4 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿﻿using Microsoft.EntityFrameworkCore;
 using WareHouseManagement.Domain.Entities;
 using WareHouseManagement.Domain.Interfaces;
 using WareHouseManagement.Infrastructure.Data;
@@ -9,6 +9,28 @@ public class OrderRepository : GenericRepository<Order>, IOrderRepository
 {
     public OrderRepository(ApplicationDbContext context) : base(context)
     {
+    }
+
+    // Override GetByIdAsync to include OrderItems and Company
+    public new async Task<Order?> GetByIdAsync(Guid id)
+    {
+        return await _dbSet
+            .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+            .Include(o => o.Company)
+            .FirstOrDefaultAsync(o => o.Id == id && !o.IsDeleted);
+    }
+
+    // Override GetAllAsync to include OrderItems and Company
+    public new async Task<IEnumerable<Order>> GetAllAsync()
+    {
+        return await _dbSet
+            .Include(o => o.OrderItems)
+                .ThenInclude(oi => oi.Product)
+            .Include(o => o.Company)
+            .Where(o => !o.IsDeleted)
+            .OrderByDescending(o => o.OrderDate)
+            .ToListAsync();
     }
 
     public async Task<Order?> GetOrderWithItemsAsync(Guid id)
