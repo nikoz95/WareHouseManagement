@@ -63,6 +63,9 @@ jobs:
             NEW_COMMIT=$(git rev-parse HEAD)
             echo "🆕 New commit: $NEW_COMMIT"
           
+            echo "🐳 Publish Application..."
+            dotnet publish src/WareHouseManagement.API/WareHouseManagement.API.csproj -c Release -o publish --no-self-contained
+
             echo "🐳 Rebuilding Docker containers..."
             docker compose build api
           
