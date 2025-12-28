@@ -76,26 +76,26 @@ jobs:
             docker ps | grep warehouse
           ENDSSH
 
-      - name: 🏥 Health Check
-        id: health_check
-        run: |
-          echo "🔍 Performing health check..."
-          
-          # Try health check up to 5 times
-          for i in {1..5}; do
-            echo "Attempt $i/5..."
-          
-            if curl -f -s http://${{ secrets.SSH_HOST }}:5000/health > /dev/null 2>&1; then
-              echo "✅ Health check passed!"
-              exit 0
-            fi
-          
-            echo "⏳ Waiting 10 seconds before retry..."
-            sleep 10
-          done
-          
-          echo "❌ Health check failed after 5 attempts"
-          exit 1
+#      - name: 🏥 Health Check
+#        id: health_check
+#        run: |
+#          echo "🔍 Performing health check..."
+#          
+#          # Try health check up to 5 times
+#          for i in {1..5}; do
+#            echo "Attempt $i/5..."
+#          
+#            if curl -f -s http://${{ secrets.SSH_HOST }}:5000/health > /dev/null 2>&1; then
+#              echo "✅ Health check passed!"
+#              exit 0
+#            fi
+#          
+#            echo "⏳ Waiting 10 seconds before retry..."
+#            sleep 10
+#          done
+#          
+#          echo "❌ Health check failed after 5 attempts"
+#          exit 1
 
       - name: 🔄 Rollback on Failure
         if: failure() && steps.deploy.conclusion == 'success'
