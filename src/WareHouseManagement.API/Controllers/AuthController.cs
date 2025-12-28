@@ -17,7 +17,7 @@ public class AuthController : ControllerBase
         _mediator = mediator;
     }
 
-    /// <summary>
+    /*/// <summary>
     /// Login - ავტორიზაცია
     /// </summary>
     [HttpPost("login")]
@@ -39,7 +39,7 @@ public class AuthController : ControllerBase
         }
 
         return Ok(result.Data);
-    }
+    }*/
 
     /// <summary>
     /// Refresh Token - ტოკენის განახლება
