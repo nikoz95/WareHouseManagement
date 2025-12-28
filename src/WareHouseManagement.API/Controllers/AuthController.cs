@@ -75,7 +75,7 @@ public class AuthController : ControllerBase
     }
 
     /// <summary>
-    /// Test endpoint - Guest უფლების შემოწმება
+    /// Test endpoint - Guest უფლების შემოწმება (ტრიპაჩების)
     /// </summary>
     [HttpGet("test-guest")]
     [Authorize(Roles = "Guest,Admin")]
