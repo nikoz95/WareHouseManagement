@@ -49,6 +49,45 @@
 	],
 	"item": [
 		{
+			"name": "0. Health Check - Simple",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/health",
+					"host": ["{{baseUrl}}"],
+					"path": ["health"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0. Health Check - Detailed",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/health/detailed",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "health", "detailed"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "0. Health Check - Database",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/health/database",
+					"host": ["{{baseUrl}}"],
+					"path": ["api", "health", "database"]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "1. Login",
 			"event": [
 				{

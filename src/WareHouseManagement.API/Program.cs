@@ -104,6 +104,10 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
+// Add Health Checks
+builder.Services.AddHealthChecks()
+    .AddDbContextCheck<ApplicationDbContext>("database");
+
 // Add CORS
 builder.Services.AddCors(options =>
 {
@@ -173,6 +177,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAll");
+
+// Add Health Check endpoint
+app.MapHealthChecks("/health");
 
 // Add Authentication & Authorization
 app.UseAuthentication();
