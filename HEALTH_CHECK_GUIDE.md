@@ -1,149 +1,51 @@
-﻿# Health Check Endpoints
+﻿# Health Check Endpoint
 
 ## Overview
-სისტემის ჯანმრთელობის შემოწმების ენდფოინთები (Health Check Endpoints) საშუალებას გაძლევთ შეამოწმოთ API-ის და მონაცემთა ბაზის მდგომარეობა.
+სისტემის ჯანმრთელობის შემოწმების ენდფოინთი (Health Check Endpoint) საშუალებას გაძლევთ შეამოწმოთ API-ის მდგომარეობა.
 
-## Available Endpoints
+## Available Endpoint
 
-### 1. Simple Health Check
+### Health Check
 **Endpoint:** `GET /health`  
 **Authorization:** Not required (Anonymous)  
-**Description:** მარტივი ჯანმრთელობის შემოწმება. აბრუნებს ASP.NET Core-ის ჩაშენებულ health check-ს.
+**Description:** API-ის ჯანმრთელობის შემოწმება. ამოწმებს მხოლოდ API-ის availability-ს.
 
 **Example Request:**
 ```bash
 curl http://localhost:5000/health
 ```
 
-**Example Response:**
+**Example Response (Healthy):**
 ```
 Healthy
 ```
 
----
-
-### 2. Basic Health Check
-**Endpoint:** `GET /api/health`  
-**Authorization:** Not required (Anonymous)  
-**Description:** მარტივი ჯანმრთელობის შემოწმება JSON ფორმატში.
-
-**Example Request:**
-```bash
-curl http://localhost:5000/api/health
-```
-
-**Example Response:**
-```json
-{
-  "status": "Healthy",
-  "timestamp": "2024-12-28T10:30:00Z",
-  "message": "WareHouse Management API is running"
-}
-```
+**HTTP Status Code:**
+- `200 OK` - API მუშაობს
 
 ---
 
-### 3. Detailed Health Check
-**Endpoint:** `GET /api/health/detailed`  
-**Authorization:** Not required (Anonymous)  
-**Description:** დეტალური ჯანმრთელობის შემოწმება API-ისა და მონაცემთა ბაზის მდგომარეობის ინფორმაციით.
-
-**Example Request:**
-```bash
-curl http://localhost:5000/api/health/detailed
-```
-
-**Example Response:**
-```json
-{
-  "status": "Healthy",
-  "timestamp": "2024-12-28T10:30:00Z",
-  "service": "WareHouse Management API",
-  "version": "1.0.0",
-  "checks": {
-    "api": {
-      "status": "Healthy",
-      "message": "API is running"
-    },
-    "database": {
-      "status": "Healthy",
-      "message": "Database connection successful",
-      "timestamp": "2024-12-28T10:30:00Z",
-      "details": {
-        "connectionState": "Connected",
-        "productCount": 5
-      }
-    }
-  }
-}
-```
-
----
-
-### 4. Database Health Check
-**Endpoint:** `GET /api/health/database`  
-**Authorization:** Not required (Anonymous)  
-**Description:** მხოლოდ მონაცემთა ბაზის ჯანმრთელობის შემოწმება.
-
-**Example Request:**
-```bash
-curl http://localhost:5000/api/health/database
-```
-
-**Example Response (Healthy):**
-```json
-{
-  "status": "Healthy",
-  "message": "Database connection successful",
-  "timestamp": "2024-12-28T10:30:00Z",
-  "details": {
-    "connectionState": "Connected",
-    "productCount": 5
-  }
-}
-```
-
-**Example Response (Unhealthy):**
-```json
-{
-  "status": "Unhealthy",
-  "message": "Database health check failed",
-  "error": "Connection timeout",
-  "timestamp": "2024-12-28T10:30:00Z"
-}
-```
-**HTTP Status:** 503 Service Unavailable (თუ database არ არის available)
-
----
-
-## Testing Health Checks
+## Testing Health Check
 
 ### Using PowerShell Script
-პროექტში არის test-health.ps1 სკრიპტი, რომელიც ყველა health check-ს ამოწმებს:
+პროექტში არის test-health.ps1 სკრიპტი, რომელიც health check-ს ამოწმებს:
 
 ```powershell
 .\test-health.ps1
 ```
 
 ### Using Postman
-Postman Collection-ში (`WareHouse_Complete_Flow.postman_collection.json`) დამატებულია 3 health check request:
-- **0. Health Check - Simple** - `/health`
-- **0. Health Check - Detailed** - `/api/health/detailed`
-- **0. Health Check - Database** - `/api/health/database`
+Postman Collection-ში (`WareHouse_Complete_Flow.postman_collection.json`) დამატებულია health check request:
+- **0. Health Check** - `/health`
 
 ### Using curl
 ```bash
-# Simple check
 curl http://localhost:5000/health
+```
 
-# Basic JSON check
-curl http://localhost:5000/api/health
-
-# Detailed check
-curl http://localhost:5000/api/health/detailed
-
-# Database check
-curl http://localhost:5000/api/health/database
+### Using PowerShell
+```powershell
+Invoke-RestMethod -Uri "http://localhost:5000/health" -Method Get
 ```
 
 ## Use Cases
@@ -159,16 +61,15 @@ livenessProbe:
 
 readinessProbe:
   httpGet:
-    path: /api/health/database
+    path: /health
     port: 5000
   initialDelaySeconds: 5
   periodSeconds: 5
 ```
 
 ### 2. Load Balancer Health Checks
-Health check ენდფოინთები შეიძლება გამოყენებულ იქნას Load Balancer-ებისთვის (nginx, HAProxy, AWS ELB):
-- `/health` - quick check
-- `/api/health/database` - deep check with DB connectivity
+Health check ენდფოინთი შეიძლება გამოყენებულ იქნას Load Balancer-ებისთვის (nginx, HAProxy, AWS ELB):
+- `/health` - ამოწმებს API-ს და Database კავშირს
 
 ### 3. Monitoring Tools
 Integration with monitoring tools like:
@@ -190,37 +91,35 @@ echo "API is healthy, running tests..."
 
 ## Status Codes
 
-| Endpoint | Healthy Status | Unhealthy Status |
-|----------|---------------|------------------|
-| `/health` | 200 OK | 503 Service Unavailable |
-| `/api/health` | 200 OK | N/A (always returns 200) |
-| `/api/health/detailed` | 200 OK | N/A (always returns 200) |
-| `/api/health/database` | 200 OK | 503 Service Unavailable |
+| Status | HTTP Code | Description |
+|--------|-----------|-------------|
+| Healthy | 200 OK | API და Database მუშაობს |
+| Unhealthy | 503 Service Unavailable | Database კავშირის პრობლემა |
 
 ## Implementation Details
 
-### Built-in ASP.NET Core Health Checks
+### ASP.NET Core Health Checks
 Program.cs-ში დამატებულია:
 ```csharp
+// Add Health Checks with database connectivity check
 builder.Services.AddHealthChecks()
     .AddDbContextCheck<ApplicationDbContext>("database");
 
+// Map health check endpoint
 app.MapHealthChecks("/health");
 ```
 
-### Custom Health Controller
-`HealthController.cs` იძლევა მეტ კონტროლს health check-ების რესპონსებზე:
-- Custom JSON responses
-- Detailed diagnostics
-- Database query testing
-- Error handling and logging
+ეს იმპლემენტაცია:
+- ამოწმებს API-ის availability-ს
+- ამოწმებს Database კავშირს (ApplicationDbContext)
+- აბრუნებს "Healthy" ან "Unhealthy" status-ს
 
 ## Security Considerations
 
-⚠️ **Important:** ყველა health check endpoint არის anonymous (არ საჭიროებს ავტორიზაციას).
+⚠️ **Important:** Health check endpoint არის anonymous (არ საჭიროებს ავტორიზაციას).
 
 **Recommendations:**
-1. მონიტორინგის სისტემებისთვის გამოიყენეთ `/health` (მარტივი, სწრაფი)
-2. დეტალური ინფორმაციისთვის (`/api/health/detailed`) შესაძლოა დაგჭირდეთ authorization-ის დამატება production-ში
-3. არ გამოაჩინოთ sensitive information health check responses-ში
+1. `/health` endpoint უნდა იყოს anonymous რათა Load Balancers და Monitoring tools-მა შეძლოს მისი გამოყენება
+2. არ გამოაჩინოთ sensitive information health check response-ში
+3. Production-ში შეგიძლიათ დაამატოთ IP whitelist თუ გსურთ მხოლოდ კონკრეტული monitoring servers-ის access
 

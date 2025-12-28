@@ -105,8 +105,7 @@ builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 // Add Health Checks
-builder.Services.AddHealthChecks()
-    .AddDbContextCheck<ApplicationDbContext>("database");
+builder.Services.AddHealthChecks();
 
 // Add CORS
 builder.Services.AddCors(options =>
