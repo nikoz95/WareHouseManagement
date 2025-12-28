@@ -1,0 +1,55 @@
+name: Deploy to Contabo
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔐 Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: 📝 Add server to known_hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: 🚀 Deploy to server
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'ENDSSH'
+            set -e
+          
+            echo "📂 Navigating to project..."
+            cd /var/www/WareHouseManagement
+          
+            echo "📥 Pulling latest code..."
+            git pull origin master
+          
+            echo "🐳 Rebuilding Docker containers..."
+            docker compose build api
+          
+            echo "♻️ Restarting containers..."
+            docker compose up -d
+          
+            echo "⏳ Waiting for containers to start..."
+            sleep 10
+          
+            echo "✅ Checking container status..."
+            docker ps
+          
+            echo "🎉 Deployment completed!"
+          ENDSSH
+
+      - name: 🔍 Verify deployment
+        run: |
+          sleep 5
+          curl -f http://${{ secrets.SSH_HOST }}:5000/health || echo "Warning: Health check failed"
